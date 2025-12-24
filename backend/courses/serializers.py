@@ -6,34 +6,40 @@ from .models import (
     User, Role, Category, Course, Module, Lesson,
     Payment, Enrollment, Rating, Assignment, Submission, UserRole, Certificate, Comment
 )
+from rest_framework_simplejwt.tokens import RefreshToken
 
-# ===== АУТЕНТИФИКАЦИЯ =====
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+class CustomTokenObtainPairSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
-        
+
         try:
             user = User.objects.get(email=email, is_active=True)
         except User.DoesNotExist:
             raise serializers.ValidationError("Неверный email или пароль")
-        
+
         if not user.check_password(password):
             raise serializers.ValidationError("Неверный email или пароль")
-        
-        # Создаём токен
-        data = super().validate(attrs)
-        
-        # Добавляем кастомные поля в ответ
-        data.update({
+
+        # Генерация токенов вручную
+        refresh = RefreshToken.for_user(user)
+        data = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
             'user_id': user.id,
             'email': user.email,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'avatar_url': user.avatar_url,
             'roles': list(UserRole.objects.filter(user=user).values_list('role_id', flat=True))
-        })
+        }
         return data
+
+
 
 # ===== РЕГИСТРАЦИЯ =====
 class RegisterSerializer(serializers.ModelSerializer):

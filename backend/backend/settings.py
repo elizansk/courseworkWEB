@@ -6,6 +6,15 @@ SECRET_KEY = 'django-insecure-...любой-ключ...'  # можно оста�
 DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
+
+
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
@@ -85,6 +94,9 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
 
 REST_FRAMEWORK = {

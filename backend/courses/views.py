@@ -24,14 +24,31 @@ from .permissions import IsAdminOrReadOnly
 
 # ===== АУТЕНТИФИКАЦИЯ =====
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        # Добавляем кастомные поля в токен
-        token['user_id'] = user.id
-        token['email'] = user.email
-        token['roles'] = list(UserRole.objects.filter(user=user).values_list('role_id', flat=True))
-        return token
+    username_field = 'email'
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+
+        try:
+            user = User.objects.get(email=email, is_active=True)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Неверный email или пароль")
+
+        if not user.check_password(password):
+            raise serializers.ValidationError("Неверный email или пароль")
+
+        data = super().validate({'email': email, 'password': password})
+
+        data.update({
+            'user_id': user.id,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'avatar_url': user.avatar_url,
+            'roles': list(UserRole.objects.filter(user=user).values_list('role_id', flat=True))
+        })
+        return data
 
 from rest_framework import generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -43,6 +60,9 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer
 
 class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -65,27 +85,35 @@ class UserEnrollmentsView(generics.ListAPIView):
             status='active'
         ).select_related('course')
 
-# ===== ПРОФИЛЬ ПРЕПОДАВАТЕЛЯ =====
 class InstructorProfileView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
+    queryset = User.objects.all()  # <- для Swagger
 
     def get_object(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return User.objects.none().first()
         return get_object_or_404(User, id=self.kwargs['pk'])
+
 
 class InstructorCoursesView(generics.ListAPIView):
     serializer_class = CourseSerializer
     permission_classes = [AllowAny]
+    queryset = Course.objects.all()  # для Swagger
 
     def get_queryset(self):
-        instructor_id = self.kwargs['pk']
+        if getattr(self, 'swagger_fake_view', False):
+            return Course.objects.none()
+        
+        instructor_id = self.kwargs.get('pk')
         return Course.objects.filter(
             instructor_id=instructor_id,
             is_published=True,
             is_deleted=False
-        ).annotate(
-            average_rating=Avg('ratings__rating')
-        ).prefetch_related('modules', 'ratings')
+        ).annotate(average_rating=Avg('ratings__rating')).prefetch_related(
+            Prefetch('modules', queryset=Module.objects.filter(is_deleted=False)),
+            'ratings'
+        )
 
 # ===== ГЛАВНАЯ СТРАНИЦА =====
 # ===== ГЛАВНАЯ СТРАНИЦА =====
@@ -137,8 +165,12 @@ class CourseLearningView(generics.RetrieveAPIView):
     lookup_field = 'slug'
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Course.objects.none()
+        
+        user = self.request.user
         return Course.objects.filter(
-            enrollments__user=self.request.user,
+            enrollments__user=user,
             enrollments__status='active',
             is_published=True,
             is_deleted=False
@@ -150,7 +182,6 @@ class CourseLearningView(generics.RetrieveAPIView):
 
     def get_object(self):
         obj = super().get_object()
-        # Добавляем прогресс обучения
         enrollment = Enrollment.objects.filter(
             user=self.request.user,
             course=obj
@@ -159,32 +190,39 @@ class CourseLearningView(generics.RetrieveAPIView):
             obj.progress_pct = enrollment.progress_pct
         return obj
 
-# ===== СТРАНИЦА УРОКА =====
+
+from django.db.models import Prefetch
+from rest_framework.exceptions import ValidationError
+
 class LessonDetailView(generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Lesson.objects.filter(
-            is_deleted=False
-        ).prefetch_related(
+        # Защита для Swagger
+        if getattr(self, 'swagger_fake_view', False):
+            return Lesson.objects.none()
+        
+        user = self.request.user
+        submissions_qs = Submission.objects.none()
+        if user.is_authenticated:
+            submissions_qs = Submission.objects.filter(user=user)
+
+        return Lesson.objects.filter(is_deleted=False).prefetch_related(
             Prefetch('assignment', queryset=Assignment.objects.all()),
-            Prefetch('submissions', queryset=Submission.objects.filter(user=self.request.user))
+            Prefetch('submissions', queryset=submissions_qs)
         )
 
     def get_object(self):
         lesson = super().get_object()
-        # Проверяем, есть ли доступ к уроку
         enrollment = Enrollment.objects.filter(
             user=self.request.user,
             course=lesson.module.course,
             status='active'
         ).first()
-        
         if not enrollment:
             raise ValidationError("Вы не записаны на этот курс")
         
-        # Если урок заблокирован и пользователь не завершил предыдущие уроки
         if lesson.is_locked:
             completed_lessons = Submission.objects.filter(
                 user=self.request.user,
@@ -195,6 +233,7 @@ class LessonDetailView(generics.RetrieveAPIView):
                 raise ValidationError("Сначала завершите предыдущие уроки")
         
         return lesson
+
 
 # ===== ОТЗЫВЫ И ОЦЕНКИ =====
 class RatingListView(generics.ListCreateAPIView):
