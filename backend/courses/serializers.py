@@ -141,6 +141,40 @@ class ModuleSerializer(serializers.ModelSerializer):
         ).values('assignment__lesson').distinct().count()
         
         return round((completed_lessons / total_lessons) * 100)
+    
+
+from rest_framework import serializers
+from .models import Course, User, Module
+
+# Короткий сериализатор для списка курсов
+class CourseListSerializer(serializers.ModelSerializer):
+    instructor = serializers.CharField(source='instructor.get_full_name', read_only=True)
+    organization = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Course
+        fields = ['id', 'title', 'short_desc', 'instructor', 'organization', 'thumbnail_url']
+
+    def get_organization(self, obj):
+        return getattr(obj, 'organization', "Не указано")  # если есть поле organization
+
+
+# Полный сериализатор для одного курса
+class CourseDetailSerializer(serializers.ModelSerializer):
+    instructor = serializers.CharField(source='instructor.get_full_name', read_only=True)
+    modules = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Course
+        fields = [
+            'id', 'title', 'short_desc', 'description', 'modules',
+            'instructor', 'organization', 'thumbnail_url'
+        ]
+    
+    def get_modules(self, obj):
+        modules = obj.modules.filter(is_deleted=False).order_by('order_num')
+        return ModuleSerializer(modules, many=True, context=self.context).data
+
 
 class CourseSerializer(serializers.ModelSerializer):
     instructor = UserSerializer(read_only=True)

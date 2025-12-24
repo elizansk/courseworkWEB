@@ -32,14 +32,9 @@ urlpatterns = [
     path('instructors/<int:pk>/', views.InstructorProfileView.as_view(), name='instructor-profile'),
     path('instructors/<int:pk>/courses/', views.InstructorCoursesView.as_view(), name='instructor-courses'),
     
-    # ===== ГЛАВНАЯ СТРАНИЦА =====
-    path('courses/', views.CourseListView.as_view(), name='course-list'),
-    
-    # ===== СТРАНИЦА КУРСА =====
-    path('courses/<slug:slug>/', views.CourseDetailView.as_view(), name='course-detail'),
-    
-    # ===== СТРАНИЦА ОБУЧЕНИЯ (ВНУТРИ КУРСА) =====
-    path('courses/<slug:slug>/learning/', views.CourseLearningView.as_view(), name='course-learning'),
+    #===== КУРСЫ ===========
+    path('courses/', views.CourseListView.as_view(), name='courses-list'),
+    path('courses/<int:id>/', views.CourseDetailView.as_view(), name='course-detail'),
     
     # ===== СТРАНИЦА УРОКА =====
     path('lessons/<int:pk>/', views.LessonDetailView.as_view(), name='lesson-detail'),

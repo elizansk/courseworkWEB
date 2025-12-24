@@ -94,6 +94,22 @@ class InstructorProfileView(generics.RetrieveAPIView):
         if getattr(self, 'swagger_fake_view', False):
             return User.objects.none().first()
         return get_object_or_404(User, id=self.kwargs['pk'])
+    
+from rest_framework import generics
+from .models import Course
+from .serializers import CourseListSerializer, CourseDetailSerializer
+
+# Список курсов — короткий формат
+class CourseListView(generics.ListAPIView):
+    queryset = Course.objects.filter(is_deleted=False)
+    serializer_class = CourseListSerializer
+
+
+# Детальный курс — полный формат
+class CourseDetailView(generics.RetrieveAPIView):
+    queryset = Course.objects.filter(is_deleted=False)
+    serializer_class = CourseDetailSerializer
+    lookup_field = 'id'
 
 
 class InstructorCoursesView(generics.ListAPIView):
