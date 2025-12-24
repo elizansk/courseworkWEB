@@ -1,10 +1,10 @@
-@import "variables";
+@use "variables";
 
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
-  background: linear-gradient(135deg, $color-bg-dark, $color-indigo, $color-purple);
-  color: $color-text-light;
+  background: linear-gradient(135deg, variables.$color-bg-dark, variables.$color-indigo, variables.$color-purple);
+  color: variables.$color-text-light;
   min-height: 100vh;
 }
 
@@ -17,5 +17,5 @@ h1, h2, h3 {
   margin: 0;
 }
 .header {
-  background: linear-gradient(90deg, $color-indigo, $color-purple, $color-pink) !important;
+  background: linear-gradient(90deg, variables.$color-indigo, variables.$color-purple, variables.$color-pink) !important;
 }

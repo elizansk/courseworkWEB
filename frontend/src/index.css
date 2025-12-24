@@ -24,40 +24,7 @@ main {
 }
 
 /* ====== HEADER ====== */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-}
-.header .logo {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: #3f51b5;
-}
-.header nav {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-.header nav a {
-    text-decoration: none;
-    color: #555;
-}
-.header nav a:hover {
-    color: #000;
-}
-.header nav button {
-    background: #3f51b5;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.4rem 1rem;
-    cursor: pointer;
-}
-.header nav button:hover {
-    background: #303f9f;
-}
+
 
 /* ====== HERO ====== */
 .hero {
@@ -148,22 +115,4 @@ main {
 }
 
 /* ====== FOOTER ====== */
-.footer {
 
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    font-size: 0.9rem;
-}
-.footer .links {
-    display: flex;
-    gap: 1rem;
-}
-.footer .links a {
-    text-decoration: none;
-    color: #555;
-}
-.footer .links a:hover {
-    color: #000;
-}
