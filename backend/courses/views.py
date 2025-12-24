@@ -33,19 +33,19 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['roles'] = list(UserRole.objects.filter(user=user).values_list('role_id', flat=True))
         return token
 
-class LoginView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
+from rest_framework import generics
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer
+from .models import User, UserRole
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
-    def perform_create(self, serializer):
-        user = serializer.save()
-        # Автоматически добавляем роль студента (role_id=3)
-        UserRole.objects.create(user=user, role_id=3)
-        return user
+class LoginView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
 
 # ===== ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ =====
 class ProfileView(generics.RetrieveAPIView):

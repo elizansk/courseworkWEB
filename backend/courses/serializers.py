@@ -42,10 +42,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = [
-            'email', 'first_name', 'last_name', 'phone',
-            'password', 'password_confirm'
-        ]
+        fields = ['email', 'first_name', 'last_name', 'phone', 'password', 'password_confirm']
     
     def validate(self, data):
         if data['password'] != data['password_confirm']:
@@ -56,19 +53,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         validated_data.pop('password_confirm')
         raw_password = validated_data.pop('password')
         
-        user = User.objects.create(
-            email=validated_data['email'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            phone=validated_data.get('phone', ''),
-            is_active=True
-        )
+        user = User.objects.create(**validated_data)
         user.set_password(raw_password)
         user.save()
         
-        # Автоматически добавляем роль студента
+        # Добавляем роль студента (id=3)
         UserRole.objects.create(user=user, role_id=3)
         return user
+
 
 # ===== ПОЛЬЗОВАТЕЛИ =====
 class UserSerializer(serializers.ModelSerializer):

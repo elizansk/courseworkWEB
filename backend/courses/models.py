@@ -1,5 +1,9 @@
 # courses/models.py
+from django.contrib.auth.hashers import make_password, check_password
 from django.db import models
+
+from django.db import models
+from django.contrib.auth.hashers import make_password, check_password
 
 class User(models.Model):
     email = models.EmailField(unique=True)
@@ -19,14 +23,13 @@ class User(models.Model):
         return check_password(raw_password, self.password_hash)
     
     def save(self, *args, **kwargs):
-        # Автоматически хешируем пароль при сохранении
-        if self.pk is None or 'password_hash' in kwargs.get('update_fields', []):
-            if not self.password_hash.startswith('pbkdf2_'):  # если пароль не захеширован
-                self.set_password(self.password_hash)
+        if not self.password_hash.startswith('pbkdf2_'):
+            self.set_password(self.password_hash)
         super().save(*args, **kwargs)
 
     class Meta:
         db_table = 'users'
+
 
 class Role(models.Model):
     id = models.SmallIntegerField(primary_key=True)
