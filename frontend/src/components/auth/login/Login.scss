@@ -1,0 +1,58 @@
+@use "sass:color";
+@use "../../../styles/variables.scss";
+
+
+
+.auth-form {
+  background: variables.$color-card-bg;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 320px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h2 {
+    margin-bottom: 1rem;
+    color: variables.$color-text-light-bg;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.6rem;
+    margin: 0.5rem 0;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    color: variables.$color-text-light-bg;
+    outline: none;
+
+    &::placeholder {
+      color: rgba(variables.$color-text-light-bg, 0.7);
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 0.6rem;
+    margin-top: 1rem;
+    border: none;
+    border-radius: 6px;
+    background: variables.$color-accent;
+    color: variables.$color-bg-dark;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+      background: color.scale(variables.$color-accent, $lightness: 10%);
+    }
+  }
+
+  .error {
+    color: variables.$color-pink;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+  }
+}

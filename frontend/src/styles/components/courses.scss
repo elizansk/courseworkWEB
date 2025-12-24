@@ -1,4 +1,5 @@
-@import "../variables.scss";
+@use "sass:color";
+@use "../variables.scss";
 
 .courses {
   margin: 3rem 0;
@@ -7,7 +8,7 @@
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    color: $color-text-light;
+    color: variables.$color-text-light;
   }
 
   .course-grid {
@@ -17,7 +18,7 @@
   }
 
   .course-card {
-    background: $color-card-bg; // ✅ теперь переменная доступна
+    background: variables.$color-card-bg;
     border-radius: 1rem;
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -41,19 +42,19 @@
       h3 {
         font-size: 1.2rem;
         font-weight: 600;
-        color: $color-text-light;
+        color: variables.$color-text-light;
         margin-bottom: 0.3rem;
       }
 
       .author {
         font-size: 0.9rem;
-        color: lighten($color-text-light, 20%);
+        color: color.adjust(variables.$color-text-light, $lightness: 20%);
         margin-bottom: 0.5rem;
       }
 
       .desc {
         font-size: 0.9rem;
-        color: lighten($color-text-light, 10%);
+        color: color.adjust(variables.$color-text-light, $lightness: 10%);
         margin-bottom: 0.5rem;
         height: 40px;
         overflow: hidden;
@@ -66,13 +67,13 @@
 
         span {
           font-weight: 600;
-          color: $color-accent;
+          color: variables.$color-accent;
         }
 
         button {
           padding: 0.4rem 1rem;
-          background: $color-accent;
-          color: $color-bg-dark;
+          background: variables.$color-accent;
+          color: variables.$color-bg-dark;
           border-radius: 0.5rem;
           border: none;
           cursor: pointer;
@@ -80,7 +81,7 @@
           transition: background 0.3s;
 
           &:hover {
-            background: $color-pink;
+            background: variables.$color-pink;
           }
         }
       }
