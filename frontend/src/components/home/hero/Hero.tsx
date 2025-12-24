@@ -1,6 +1,6 @@
-import "../../styles/components/hero.scss";
+import "./hero.scss";
 
-const HeroSection: React.FC = () => (
+const Hero: React.FC = () => (
     <section className="hero">
         <h1>Открой для себя мир знаний</h1>
         <p>Онлайн-курсы по программированию, дизайну и не только</p>
@@ -8,4 +8,4 @@ const HeroSection: React.FC = () => (
     </section>
 );
 
-export default HeroSection;
+export default Hero;

@@ -1,0 +1,86 @@
+@use "../../../styles/variables.scss";
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 3rem;
+  background: linear-gradient(90deg, variables.$color-indigo, variables.$color-purple, variables.$color-pink);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    img {
+      width: 40px;
+      height: 40px;
+    }
+
+    span {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: variables.$color-text-light-bg;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  &__nav {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+
+    a {
+      color: variables.$color-text-light-bg !important;
+      font-weight: 500;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); // повышаем читаемость
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+
+      &:hover {
+        color: variables.$color-accent;
+        text-shadow: 0 0 10px variables.$color-accent;
+      }
+    }
+
+    &__logout-btn {
+      all: unset; // полностью убирает дефолтные стили кнопки
+      cursor: pointer;
+
+      padding: 6px 14px;
+      border-radius: 8px;
+
+      color: variables.$color-text-light-bg;
+      font-weight: 500;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+
+      border: 2px solid rgba(255, 255, 255, 0.6);
+
+      transition: background 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease,
+      transform 0.15s ease,
+      box-shadow 0.3s ease;
+
+      display: flex; // ← чтобы текст центрировался
+      align-items: center; // ←
+      justify-content: center; // ←
+
+      &:hover {
+        background: variables.$color-accent;
+        color: #fff;
+        border-color: variables.$color-accent;
+        box-shadow: 0 0 12px variables.$color-accent;
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+    }
+  }
+}
