@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:15
+    image: zerovcandie/bd:latest
     container_name: lms_db
     environment:
       POSTGRES_DB: KyrsovayaBD
