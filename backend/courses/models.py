@@ -71,9 +71,16 @@ class Course(models.Model):
 
     class Meta:
         db_table = 'courses'
+        managed = False
+
 
 class Module(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, db_column='course_id')
+    course = models.ForeignKey(
+        Course, 
+        on_delete=models.CASCADE, 
+        db_column='course_id', 
+        related_name='modules' 
+    )
     title = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
@@ -82,6 +89,8 @@ class Module(models.Model):
     class Meta:
         db_table = 'modules'
         unique_together = (('course', 'order_num'),)
+
+
 
 class Lesson(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, db_column='module_id')
@@ -125,7 +134,7 @@ class Enrollment(models.Model):
 
 class Rating(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_column='user_id')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, db_column='course_id')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, db_column='course_id', related_name='ratings')
     rating = models.SmallIntegerField()
     comment = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -133,6 +142,7 @@ class Rating(models.Model):
     class Meta:
         db_table = 'ratings'
         unique_together = (('user', 'course'),)
+
 
 class Assignment(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, db_column='lesson_id')
