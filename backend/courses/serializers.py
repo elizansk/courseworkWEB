@@ -109,11 +109,10 @@ class LessonSerializer(serializers.ModelSerializer):
         ).exists()
     
     def get_assignment(self, obj):
-        try:
-            assignment = Assignment.objects.get(lesson=obj)
-            return AssignmentSerializer(assignment).data
-        except Assignment.DoesNotExist:
-            return None
+        assignments = Assignment.objects.filter(lesson=obj)
+        if assignments.exists():
+            return AssignmentSerializer(assignments, many=True, context=self.context).data
+        return []
 
 # ===== МОДУЛИ =====
 class ModuleSerializer(serializers.ModelSerializer):
@@ -145,7 +144,6 @@ class ModuleSerializer(serializers.ModelSerializer):
         
         return round((completed_lessons / total_lessons) * 100)
 
-# ===== КУРСЫ =====
 class CourseSerializer(serializers.ModelSerializer):
     instructor = UserSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
@@ -163,12 +161,12 @@ class CourseSerializer(serializers.ModelSerializer):
         ]
     
     def get_modules(self, obj):
-        modules = obj.module_set.filter(is_deleted=False).order_by('order_num')
+        modules = obj.modules.filter(is_deleted=False).order_by('order_num')[:1]  # вместо obj.module_set
         return ModuleSerializer(modules, many=True, context=self.context).data
+
     
     def get_average_rating(self, obj):
-        avg = Rating.objects.filter(course=obj).aggregate(Avg('rating'))['rating__avg']
-        return round(avg, 1) if avg else None
+        return round(obj.average_rating, 1) if hasattr(obj, 'average_rating') and obj.average_rating else None
     
     def get_ratings(self, obj):
         ratings = Rating.objects.filter(course=obj).select_related('user')[:5]
@@ -186,6 +184,7 @@ class CourseSerializer(serializers.ModelSerializer):
         ).first()
         
         return enrollment.progress_pct if enrollment else 0
+
 
 class RatingWithUserSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

@@ -88,6 +88,7 @@ class InstructorCoursesView(generics.ListAPIView):
         ).prefetch_related('modules', 'ratings')
 
 # ===== ГЛАВНАЯ СТРАНИЦА =====
+# ===== ГЛАВНАЯ СТРАНИЦА =====
 class CourseListView(generics.ListAPIView):
     serializer_class = CourseSerializer
     permission_classes = [AllowAny]
@@ -95,15 +96,20 @@ class CourseListView(generics.ListAPIView):
     filterset_fields = ['category']
 
     def get_queryset(self):
-        return Course.objects.filter(
+        # Сначала queryset без срезов
+        queryset = Course.objects.filter(
             is_published=True,
             is_deleted=False
         ).annotate(
             average_rating=Avg('ratings__rating')
         ).prefetch_related(
-            Prefetch('modules', queryset=Module.objects.filter(is_deleted=False).order_by('order_num')[:1]),  # Только первый модуль для превью
+            Prefetch('modules', queryset=Module.objects.filter(is_deleted=False).order_by('order_num')),
             'instructor'
-        ).order_by('-created_at')[:10]  # Последние 10 курсов
+        ).order_by('-created_at')
+
+        # Ограничиваем количество курсов в конце
+        return queryset[:10]
+
 
 # ===== СТРАНИЦА КУРСА =====
 class CourseDetailView(generics.RetrieveAPIView):
