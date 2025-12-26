@@ -34,7 +34,7 @@ urlpatterns = [
     
     #===== КУРСЫ ===========
     path('courses/', views.CourseListView.as_view(), name='courses-list'),
-    path('courses/<int:id>/', views.CourseDetailView.as_view(), name='course-detail'),
+    path('courses/<slug:slug>/', views.CourseDetailView.as_view(), name='course-detail'),
     
     # ===== СТРАНИЦА УРОКА =====
     path('lessons/<int:pk>/', views.LessonDetailView.as_view(), name='lesson-detail'),
