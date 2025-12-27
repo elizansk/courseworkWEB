@@ -2,10 +2,14 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import AuthPage from "./pages/Auth/AuthPage";
 import HomePage from "./pages/Home/HomePage";
-import AboutPage from "./pages/About/AboutPage";
+import PridePage from "./pages/Pride/PridePage.tsx";
+import ProfilePage from "./pages/Profile/ProfilePage";
+
 
 import { MainLayout } from "./layout/MainLayout.tsx";
 import { AuthLayout } from "./layout/AuthLayout";
+import CoursesPage from "./pages/Courses/CoursesPage.tsx";
+import CourseDetailPage from "./pages/CourseDetailPage/CourseDetailPage.tsx";
 
 const App = () => (
     <BrowserRouter>
@@ -16,7 +20,15 @@ const App = () => (
             <Route element={<AuthLayout />}>
                 <Route element={<MainLayout />}>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/pride" element={<PridePage />} />
+                    <Route path="/courses" element={<CoursesPage />} />
+                    <Route path="/course/:id" element={<CourseDetailPage />} />
+                    <Route path="/profile" element={<ProfilePage userRole="student" />} />
+                    <Route path="/teacher" element={<ProfilePage userRole="teacher" />} />
+                    <Route path="/admin" element={<ProfilePage userRole="admin" />} />
+
+
+
                 </Route>
             </Route>
 

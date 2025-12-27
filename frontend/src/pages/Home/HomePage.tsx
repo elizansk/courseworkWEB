@@ -1,13 +1,11 @@
-import Hero from "../../components/home/hero/Hero.tsx";
-import CoursesSection from "../../components/home/CoursesSection";
+import CoursesSection from "../../components/home//CoursesSection/CoursesSection.tsx";
+import AboutSection from "../../components/home/AboutSection/AboutSection";
 
 const HomePage: React.FC = () => (
-    <>
-        <main>
-            <Hero />
-            <CoursesSection />
-        </main>
-    </>
+    <main>
+        <CoursesSection />
+        <AboutSection />
+    </main>
 );
 
 export default HomePage;

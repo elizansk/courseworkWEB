@@ -17,7 +17,7 @@ const Header: React.FC = () => {
                 <nav className="header__nav">
                     <a href="/">Главная</a>
                     <a href="/courses">Курсы</a>
-                    <a href="/about">О нас</a>
+                    <a href="/pride">Наша гордость</a>
                     <a href="/profile">Личный кабинет</a>
                     <button onClick={logout} className="header__nav__logout-btn">
                         Выйти
