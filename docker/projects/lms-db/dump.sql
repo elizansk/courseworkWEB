@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict wtl2ms8KRnMEeTUN9ByYUvTImHP2deorDxUHreKBKp4CbNXXQzcQ3W9sUKoVkBc
+\restrict AzzPT5kFz201KTZVOiImhw9ZtOwzeiZsVHilwpBfh0L6tHoIGpq3gb9IsZErvq2
 
 -- Dumped from database version 15.15 (Debian 15.15-1.pgdg13+1)
 -- Dumped by pg_dump version 15.15 (Debian 15.15-1.pgdg13+1)
@@ -963,22 +963,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.assignments (id, lesson_id, title, description, due_date, max_score, is_required) FROM stdin;
-1	1	Hello World на Python	Напишите первую программу	\N	10	t
-2	3	Калькулятор на Python	Функции для 4 операций	\N	20	t
-3	5	Консольный калькулятор на C#	Сделайте приложение	\N	20	t
-4	7	Класс "Автомобиль" на C#	Создайте класс	\N	25	t
-5	9	Консольное приложение на Java	Hello World	\N	15	t
-6	11	Обработка исключений	Разделите два числа	\N	20	t
-7	13	Компонент "Карточка"	Создайте React-компонент	\N	15	t
-8	15	Счётчик на useState	Кнопки +1, -1	\N	20	t
-9	1	Hello World на Python	Напишите первую программу	\N	10	t
-10	3	Калькулятор на Python	Функции для 4 операций	\N	20	t
-11	5	Консольный калькулятор на C#	Сделайте приложение	\N	20	t
-12	7	Класс "Автомобиль" на C#	Создайте класс	\N	25	t
-13	9	Консольное приложение на Java	Hello World	\N	15	t
-14	11	Обработка исключений	Разделите два числа	\N	20	t
-15	13	Компонент "Карточка"	Создайте React-компонент	\N	15	t
-16	15	Счётчик на useState	Кнопки +1, -1	\N	20	t
 \.
 
 
@@ -1095,8 +1079,8 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-1	pbkdf2_sha256$600000$yobeNqlDBC54bgKYDrvr3y$aTuMNvod626lDtEgISvTsNWJ3deXOp6nS2g0dQl1mJ8=	2025-12-14 16:32:19.999641+00	t	admin			bigrussingboss@gmail.com	t	t	2025-12-14 12:15:03.262284+00
-2	pbkdf2_sha256$600000$7VcwJqeuII2Vrib7tXss2x$seIWrEA49dGY/S7HypoJbcZ37nqblBhInLnjwupEUCg=	2025-12-23 18:14:37.387461+00	t	zxcgul			bigrussingboss@gmail.com	t	t	2025-12-23 17:54:26.446863+00
+1	pbkdf2_sha256$600000$yobeNqlDBC54bgKYDrvr3y$aTuMNvod626lDtEgISvTsNWJ3deXOp6nS2g0dQl1mJ8=	2025-12-14 16:32:19.999+00	t	admin			bigrussingboss@gmail.com	t	t	2025-12-14 12:15:03.262+00
+2	pbkdf2_sha256$600000$7VcwJqeuII2Vrib7tXss2x$seIWrEA49dGY/S7HypoJbcZ37nqblBhInLnjwupEUCg=	2025-12-23 18:14:37.387+00	t	zxcgul			bigrussingboss@gmail.com	t	t	2025-12-23 17:54:26.446+00
 \.
 
 
@@ -1121,7 +1105,14 @@ COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
 --
 
 COPY public.categories (id, name, slug, parent_id, date_create) FROM stdin;
-1	Программирование	programming	\N	2025-12-14 12:29:23.656368
+1	Программирование	programming	\N	2025-12-14 09:29:23.656
+2	DevOps	devops	\N	2025-12-24 10:56:59.145
+3	Data Science	data-science	\N	2025-12-24 10:56:59.145
+4	Frontend	frontend	\N	2025-12-24 10:56:59.145
+5	UI/UX	ui-ux	\N	2025-12-24 10:56:59.145
+6	Big Data	big-data	\N	2025-12-24 10:56:59.145
+7	Кибербезопасность	cybersecurity	\N	2025-12-24 10:56:59.145
+8	Blockchain	blockchain	\N	2025-12-24 10:56:59.145
 \.
 
 
@@ -1130,7 +1121,6 @@ COPY public.categories (id, name, slug, parent_id, date_create) FROM stdin;
 --
 
 COPY public.certificates (id, user_id, course_id, issued_at, certificate_url, verification_code) FROM stdin;
-1	5	1	2025-12-14 12:29:23.668865	https://edu.ru/cert/py-5.pdf	CERT-PY-5-2025
 \.
 
 
@@ -1139,16 +1129,6 @@ COPY public.certificates (id, user_id, course_id, issued_at, certificate_url, ve
 --
 
 COPY public.comments (id, parent_id, user_id, course_id, lesson_id, content, created_at, is_deleted) FROM stdin;
-1	\N	5	1	1	А обязательно ли использовать VS Code?	2025-12-14 12:29:23.669814	f
-2	\N	3	1	1	Нет, можно любую IDE	2025-12-14 12:29:23.669814	f
-3	\N	6	2	5	Что такое .sln файл?	2025-12-14 12:29:23.669814	f
-4	\N	4	2	5	Это решение в Visual Studio	2025-12-14 12:29:23.669814	f
-5	\N	7	3	\N	Когда выйдет следующий модуль?	2025-12-14 12:29:23.672371	f
-6	\N	5	1	1	А обязательно ли использовать VS Code?	2025-12-14 12:29:34.366748	f
-7	\N	3	1	1	Нет, можно любую IDE	2025-12-14 12:29:34.366748	f
-8	\N	6	2	5	Что такое .sln файл?	2025-12-14 12:29:34.366748	f
-9	\N	4	2	5	Это решение в Visual Studio	2025-12-14 12:29:34.366748	f
-10	\N	7	3	\N	Когда выйдет следующий модуль?	2025-12-14 12:29:34.367475	f
 \.
 
 
@@ -1157,10 +1137,16 @@ COPY public.comments (id, parent_id, user_id, course_id, lesson_id, content, cre
 --
 
 COPY public.courses (id, title, slug, description, short_desc, instructor_id, category_id, price, is_published, is_deleted, thumbnail_url, duration_hours, created_at, updated_at) FROM stdin;
-1	Python	python	Полный курс по Python: синтаксис, функции, ООП.	Научитесь программировать на Python	3	1	2990.00	t	f	https://t.com/py.jpg	20	2025-12-23 18:10:49.293625	2025-12-23 18:10:49.293625
-2	C#	csharp	Основы C# и .NET: переменные, классы, коллекции.	Освойте C# и создайте приложение	4	1	3490.00	t	f	https://t.com/cs.jpg	24	2025-12-23 18:10:49.293625	2025-12-23 18:10:49.293625
-3	Java	java	Базовый курс по Java: синтаксис, ООП, исключения.	Изучите Java и напишите консольное приложение	3	1	3290.00	t	f	https://t.com/java.jpg	22	2025-12-23 18:10:49.293625	2025-12-23 18:10:49.293625
-4	React	react	Современный React: компоненты, хуки, маршрутизация.	Создайте SPA на React	4	1	3990.00	t	f	https://t.com/react.jpg	26	2025-12-23 18:10:49.293625	2025-12-23 18:10:49.293625
+5	DevOps и CI/CD	devops-cicd	Разработчиков и системных администраторов, желающих автоматизировать процессы разработки и развертывания. Базовые знания Linux, Git, Bash. Понимание разработки ПО. Научитесь настраивать CI/CD пайплайны, автоматизировать тестирование и деплой, работать с Docker, Kubernetes и облачными сервисами.	Освойте процессы автоматизации и развёртывания приложений	19	1	499.99	t	f	https://cdn.coursehunter.net/courses/540x320/devops-ci-cd-nepreryvnaya-integraciya-dostavka-dlya-nachinayushchih.webp	45	2025-12-24 10:57:04.888	2025-12-24 10:57:04.888
+10	Микросервисная архитектура (продвинутый)	microservices-adv	Продвинутый курс по микросервисной архитектуре, контейнеризации и распределённым системам.	Углубленное изучение микросервисов	15	1	599.99	t	f	https://miro.medium.com/v2/resize:fit:1400/format:webp/1*vN01lCXAlmGteKS0GF1-2A.jpeg	60	2025-12-24 10:57:04.888	2025-12-24 10:57:04.888
+11	Python Data Science	python-data-science	Углублённый курс по анализу данных и машинному обучению на Python.	Аналитика и Data Science на Python	16	2	649.99	t	f	https://cdn.coursehunter.net/courses/720x440/postigaem-osnovy-python.webp	55	2025-12-24 10:57:04.888	2025-12-24 10:57:04.888
+12	React и Advanced Frontend	react-advanced	Продвинутый курс по React и современным фронтенд технологиям.	Advanced React	17	3	549.99	t	f	https://beonmax.com/img//cover/react.jpg	50	2025-12-24 10:57:04.888	2025-12-24 10:57:04.888
+13	Машинное обучение (продвинутый)	ml-advanced	Продвинутый курс по машинному обучению, нейронным сетям и применению ML в реальных проектах.	Advanced ML	18	4	699.99	t	f	\N	60	2025-12-24 10:57:04.888	2025-12-24 10:57:04.888
+14	DevOps для продвинутых	devops-advanced	Углубленный курс по DevOps, CI/CD и автоматизации процессов.	Advanced DevOps	19	1	699.99	t	f	https://cdn.coursehunter.net/courses/540x320/devops-ci-cd-nepreryvnaya-integraciya-dostavka-dlya-nachinayushchih.webp	55	2025-12-24 07:57:04.888	2025-12-24 11:03:01.718
+6	UI/UX дизайн	ui-ux-design	Начинающих дизайнеров и разработчиков, которые хотят улучшить интерфейсы своих приложений. Базовые навыки работы с графическими редакторами (Figma, Sketch, Adobe XD). Научитесь проектировать интерфейсы, работать с UX-паттернами, создавать прототипы и тестировать дизайн на пользователях.	Создавайте удобные и привлекательные интерфейсы	20	2	399.99	t	f	https://via.placeholder.com/300x200.png?text=UI/UX	30	2025-12-24 10:57:04.888	2025-12-24 10:57:04.888
+7	Big Data и аналитика	big-data	Аналитиков, разработчиков и инженеров данных, которые хотят работать с большими объёмами информации. Python, SQL, базовая статистика. Научитесь работать с Hadoop, Spark, обрабатывать большие данные и строить аналитические модели для реальных бизнес-задач.	Научитесь обрабатывать и анализировать большие данные	21	3	549.99	t	f	https://via.placeholder.com/300x200.png?text=Big+Data	50	2025-12-24 10:57:04.888	2025-12-24 10:57:04.888
+8	Кибербезопасность	cybersecurity	Специалистов по ИТ и разработчиков, которые хотят углубиться в безопасность приложений и сетей. Базовые знания сетей, операционных систем и программирования. Научитесь выявлять уязвимости, защищать приложения и сети, работать с инструментами тестирования безопасности и аудита.	Освойте защиту систем и предотвращение атак	22	1	499.99	t	f	https://via.placeholder.com/300x200.png?text=Cybersecurity	40	2025-12-24 10:57:04.888	2025-12-24 10:57:04.888
+9	Blockchain и смарт-контракты	blockchain	Разработчиков и специалистов, интересующихся децентрализованными приложениями и криптовалютами. JavaScript, базовые знания криптографии. Научитесь разрабатывать смарт-контракты на Ethereum, создавать dApps и работать с блокчейн-сетями.	Изучите технологии блокчейн и разработку смарт-контрактов	23	2	599.99	t	f	https://via.placeholder.com/300x200.png?text=Blockchain	45	2025-12-24 10:57:04.888	2025-12-24 10:57:04.888
 \.
 
 
@@ -1185,6 +1171,14 @@ COPY public.courses_user_user_permissions (id, user_id, permission_id) FROM stdi
 --
 
 COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2025-12-24 12:02:35.721+00	12	User object (12)	2	[{"changed": {"fields": ["Is active"]}}]	11	2
+2	2025-12-24 12:04:45.653+00	13	User object (13)	2	[{"changed": {"fields": ["Is active"]}}]	11	2
+3	2025-12-24 12:22:29.227+00	13	User object (13)	2	[{"changed": {"fields": ["Is active"]}}]	11	2
+4	2025-12-24 14:03:01.725+00	14	Course object (14)	2	[]	7	2
+5	2025-12-24 15:04:54.213+00	1	Course object (1)	3		7	2
+6	2025-12-24 15:05:02.685+00	2	Course object (2)	3		7	2
+7	2025-12-24 15:05:09.553+00	3	Course object (3)	3		7	2
+8	2025-12-24 15:05:15.762+00	4	Course object (4)	3		7	2
 \.
 
 
@@ -1250,9 +1244,9 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 --
 
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
-stiiqo1dbskv7rb8i4r8phqwlkxj48x9	.eJxVjMsOwiAQRf-FtSEMb1y69xvIwIBUDU1KuzL-uzbpQrf3nHNfLOK2triNssSJ2JkBO_1uCfOj9B3QHftt5nnu6zIlviv8oINfZyrPy-H-HTQc7Vs7q4UTQSvpEzifwYPBYEHpGkChNNVVD1ZQ0tq4ashClUWRIIupZmTvD5zVNxM:1vUp1A:RfVrKBKdARNRGIWcTFxsgEs_6epD4kOq_Vx4v4e7oEI	2025-12-28 16:32:20.003894+00
-ouc86eelz2zf2f6mfyp6xv8bvewqh9mn	.eJxVjDsOwjAQBe_iGllrB_8o6TmDtV6vcQA5UpxUiLuTSCmgfTPz3iLiutS4dp7jmMVFaHH63RLSk9sO8gPbfZI0tWUek9wVedAub1Pm1_Vw_w4q9rrVIetsvTODBeU5ATEkQ6S8UWCgBE4uOfQOC5tN1a4UBlJkz07jwEF8vuKVODQ:1vY6ay:0Vdz9JxaZXLmzdYqd_-c_hPA2AVB2usWErCSFzy1zWY	2026-01-06 17:54:52.985243+00
-1kf98gk5pfs2mq1vfbowxluzv0o1v37f	.eJxVjDsOwjAQBe_iGllrB_8o6TmDtV6vcQA5UpxUiLuTSCmgfTPz3iLiutS4dp7jmMVFaHH63RLSk9sO8gPbfZI0tWUek9wVedAub1Pm1_Vw_w4q9rrVIetsvTODBeU5ATEkQ6S8UWCgBE4uOfQOC5tN1a4UBlJkz07jwEF8vuKVODQ:1vY6u5:R-j1EsP1_aCy01sYPLOQaPIZRh1h3Qgm0Y7zX-BhAFI	2026-01-06 18:14:37.389396+00
+1kf98gk5pfs2mq1vfbowxluzv0o1v37f	.eJxVjDsOwjAQBe_iGllrB_8o6TmDtV6vcQA5UpxUiLuTSCmgfTPz3iLiutS4dp7jmMVFaHH63RLSk9sO8gPbfZI0tWUek9wVedAub1Pm1_Vw_w4q9rrVIetsvTODBeU5ATEkQ6S8UWCgBE4uOfQOC5tN1a4UBlJkz07jwEF8vuKVODQ:1vY6u5:R-j1EsP1_aCy01sYPLOQaPIZRh1h3Qgm0Y7zX-BhAFI	2026-01-06 18:14:37.389+00
+ouc86eelz2zf2f6mfyp6xv8bvewqh9mn	.eJxVjDsOwjAQBe_iGllrB_8o6TmDtV6vcQA5UpxUiLuTSCmgfTPz3iLiutS4dp7jmMVFaHH63RLSk9sO8gPbfZI0tWUek9wVedAub1Pm1_Vw_w4q9rrVIetsvTODBeU5ATEkQ6S8UWCgBE4uOfQOC5tN1a4UBlJkz07jwEF8vuKVODQ:1vY6ay:0Vdz9JxaZXLmzdYqd_-c_hPA2AVB2usWErCSFzy1zWY	2026-01-06 17:54:52.985+00
+stiiqo1dbskv7rb8i4r8phqwlkxj48x9	.eJxVjMsOwiAQRf-FtSEMb1y69xvIwIBUDU1KuzL-uzbpQrf3nHNfLOK2triNssSJ2JkBO_1uCfOj9B3QHftt5nnu6zIlviv8oINfZyrPy-H-HTQc7Vs7q4UTQSvpEzifwYPBYEHpGkChNNVVD1ZQ0tq4ashClUWRIIupZmTvD5zVNxM:1vUp1A:RfVrKBKdARNRGIWcTFxsgEs_6epD4kOq_Vx4v4e7oEI	2025-12-28 16:32:20.003+00
 \.
 
 
@@ -1261,10 +1255,6 @@ ouc86eelz2zf2f6mfyp6xv8bvewqh9mn	.eJxVjDsOwjAQBe_iGllrB_8o6TmDtV6vcQA5UpxUiLuTSC
 --
 
 COPY public.enrollments (id, user_id, course_id, payment_id, enrolled_at, completed_at, progress_pct, status) FROM stdin;
-1	5	1	1	2025-12-23 18:11:29.750112	2025-12-10 18:00:00	100	completed
-2	6	2	2	2025-12-23 18:11:29.750112	\N	60	active
-3	7	3	3	2025-12-23 18:11:29.750112	\N	40	active
-4	8	4	4	2025-12-23 18:11:29.750112	\N	20	active
 \.
 
 
@@ -1273,22 +1263,6 @@ COPY public.enrollments (id, user_id, course_id, payment_id, enrolled_at, comple
 --
 
 COPY public.lessons (id, module_id, title, content, video_url, is_deleted, order_num, is_locked, duration_min) FROM stdin;
-1	1	Установка и Hello World	Как установить Python	https://v.com/py1	f	1	f	10
-2	1	Переменные и типы	int, str, bool, list	https://v.com/py2	f	2	f	12
-3	2	Функции	def, аргументы, return	https://v.com/py3	f	1	f	15
-4	2	Классы	class, объекты, наследование	https://v.com/py4	f	2	f	18
-5	3	Первая программа	Hello World в Visual Studio	https://v.com/cs1	f	1	f	11
-6	3	Условия и циклы	if, for, while	https://v.com/cs2	f	2	f	13
-7	4	Классы	Определение и использование	https://v.com/cs3	f	1	f	16
-8	4	LINQ	Запросы к коллекциям	https://v.com/cs4	f	2	f	14
-9	5	JDK и IntelliJ IDEA	Настройка среды	https://v.com/java1	f	1	f	9
-10	5	Методы	Создание и вызов методов	https://v.com/java2	f	2	f	12
-11	6	Исключения	try-catch-finally	https://v.com/java3	f	1	f	14
-12	6	Списки и Map	ArrayList, HashMap	https://v.com/java4	f	2	f	15
-13	7	Что такое React	JSX, компоненты	https://v.com/react1	f	1	f	12
-14	7	State и Props	Управление данными	https://v.com/react2	f	2	f	16
-15	8	useState	Хук для состояния	https://v.com/react3	f	1	f	14
-16	8	React Router	Навигация между страницами	https://v.com/react4	f	2	f	18
 \.
 
 
@@ -1297,14 +1271,6 @@ COPY public.lessons (id, module_id, title, content, video_url, is_deleted, order
 --
 
 COPY public.modules (id, course_id, title, description, is_deleted, order_num) FROM stdin;
-1	1	Основы Python	Первые шаги	f	1
-2	1	Функции и ООП	Создание функций и классов	f	2
-3	2	Синтаксис C#	Типы, циклы, условия	f	1
-4	2	Классы и объекты	Основы ООП в C#	f	2
-5	3	Основы Java	JDK, IDE, синтаксис	f	1
-6	3	Коллекции и исключения	Работа с данными и ошибками	f	2
-7	4	Компоненты React	JSX, props, state	f	1
-8	4	Хуки и маршруты	useState, useEffect, React Router	f	2
 \.
 
 
@@ -1313,14 +1279,6 @@ COPY public.modules (id, course_id, title, description, is_deleted, order_num) F
 --
 
 COPY public.payments (id, user_id, course_id, amount, currency, payment_method, status, transaction_id, paid_at) FROM stdin;
-1	5	1	2990.00	RUB	bank_card	completed	txn001	2025-12-01 10:00:00
-2	6	2	3490.00	RUB	sbp	completed	txn002	2025-12-01 11:30:00
-3	7	3	3290.00	RUB	bank_card	completed	txn003	2025-12-02 09:15:00
-4	8	4	3990.00	RUB	wallet	completed	txn004	2025-12-02 14:20:00
-5	5	1	2990.00	RUB	bank_card	completed	txn001	2025-12-01 10:00:00
-6	6	2	3490.00	RUB	sbp	completed	txn002	2025-12-01 11:30:00
-7	7	3	3290.00	RUB	bank_card	completed	txn003	2025-12-02 09:15:00
-8	8	4	3990.00	RUB	wallet	completed	txn004	2025-12-02 14:20:00
 \.
 
 
@@ -1329,10 +1287,6 @@ COPY public.payments (id, user_id, course_id, amount, currency, payment_method, 
 --
 
 COPY public.ratings (id, user_id, course_id, rating, comment, created_at) FROM stdin;
-1	5	1	5	Отличный курс!	2025-12-23 18:11:35.840737
-2	6	2	4	Хорошо, но сложно	2025-12-23 18:11:35.840737
-3	7	3	5	Лучшее объяснение Java!	2025-12-23 18:11:35.840737
-4	8	4	4	Нужно больше практики	2025-12-23 18:11:35.840737
 \.
 
 
@@ -1352,10 +1306,6 @@ COPY public.roles (id, name, description) FROM stdin;
 --
 
 COPY public.submissions (id, assignment_id, user_id, submitted_at, content, file_url, score, feedback, is_graded) FROM stdin;
-1	1	5	2025-12-14 12:29:23.667859	print("Hello")	\N	10	\N	t
-2	3	5	2025-12-14 12:29:23.667859	Код функций	\N	18	\N	t
-3	5	6	2025-12-14 12:29:23.667859	Архив проекта	\N	19	\N	t
-4	7	6	2025-12-14 12:29:23.667859	Класс Car	\N	24	\N	t
 \.
 
 
@@ -1364,14 +1314,28 @@ COPY public.submissions (id, assignment_id, user_id, submitted_at, content, file
 --
 
 COPY public.users (id, email, password_hash, first_name, last_name, phone, avatar_url, is_active, created_at, updated_at) FROM stdin;
-1	nikita@edu.ru	hash1	Никита	Поляков	+79001111111	https://a.com/nikita.jpg	t	2025-12-14 12:29:23.653099	2025-12-14 12:29:23.653099
-2	liza@edu.ru	hash2	Лиза	Смирнова	+79002222222	https://a.com/liza.jpg	t	2025-12-14 12:29:23.653099	2025-12-14 12:29:23.653099
-3	python_teacher@edu.ru	hash3	Анна	Котова	+79003333333	https://a.com/anna.jpg	t	2025-12-14 12:29:23.653099	2025-12-14 12:29:23.653099
-4	web_teacher@edu.ru	hash4	Иван	Сергеев	+79004444444	https://a.com/ivan.jpg	t	2025-12-14 12:29:23.653099	2025-12-14 12:29:23.653099
-5	student1@edu.ru	hash5	Мария	Иванова	+79005555555	https://a.com/mary.jpg	t	2025-12-14 12:29:23.653099	2025-12-14 12:29:23.653099
-6	student2@edu.ru	hash6	Артём	Фёдоров	+79006666666	\N	t	2025-12-14 12:29:23.653099	2025-12-14 12:29:23.653099
-7	student3@edu.ru	hash7	Ольга	Петрова	+79007777777	https://a.com/olga.jpg	t	2025-12-14 12:29:23.653099	2025-12-14 12:29:23.653099
-8	student4@edu.ru	hash8	Дмитрий	Сидоров	+79008888888	\N	t	2025-12-14 12:29:23.653099	2025-12-14 12:29:23.653099
+15	ivan.ivanov@edu.ru	hash15	Иван	Иванов	+79001111555	https://miro.medium.com/v2/resize:fit:1400/format:webp/1*vN01lCXAlmGteKS0GF1-2A.jpeg	t	2025-12-24 10:52:05.609	2025-12-26 07:47:58.47308
+16	maria.petrova@edu.ru	hash16	Мария	Петрова	+79002222666	https://cdn.coursehunter.net/courses/720x440/postigaem-osnovy-python.webp	t	2025-12-24 10:52:05.609	2025-12-26 07:47:58.47308
+17	aleksey.smirnov@edu.ru	hash17	Алексей	Смирнов	+79003333777	https://beonmax.com/img//cover/react.jpg	t	2025-12-24 10:52:05.609	2025-12-26 07:47:58.47308
+1	nikita@edu.ru	hash1	Никита	Поляков	+79001111111	https://a.com/nikita.jpg	t	2025-12-14 09:29:23.653	2025-12-26 07:47:58.47308
+2	liza@edu.ru	hash2	Лиза	Смирнова	+79002222222	https://a.com/liza.jpg	t	2025-12-14 09:29:23.653	2025-12-26 07:47:58.47308
+3	python_teacher@edu.ru	hash3	Анна	Котова	+79003333333	https://a.com/anna.jpg	t	2025-12-14 09:29:23.653	2025-12-26 07:47:58.47308
+4	web_teacher@edu.ru	hash4	Иван	Сергеев	+79004444444	https://a.com/ivan.jpg	t	2025-12-14 09:29:23.653	2025-12-26 07:47:58.47308
+5	student1@edu.ru	hash5	Мария	Иванова	+79005555555	https://a.com/mary.jpg	t	2025-12-14 09:29:23.653	2025-12-26 07:47:58.47308
+6	student2@edu.ru	hash6	Артём	Фёдоров	+79006666666	\N	t	2025-12-14 09:29:23.653	2025-12-26 07:47:58.47308
+7	student3@edu.ru	hash7	Ольга	Петрова	+79007777777	https://a.com/olga.jpg	t	2025-12-14 09:29:23.653	2025-12-26 07:47:58.47308
+8	student4@edu.ru	hash8	Дмитрий	Сидоров	+79008888888	\N	t	2025-12-14 09:29:23.653	2025-12-26 07:47:58.47308
+10	user@example.com	pbkdf2_sha256$600000$DviklB8t3zZtJ2KpMUtQxx$dyjShvIxsYPx/ugEEz9ovNX/CtvoRyP5DmDqk0VnLCI=	Ivan	Kiselev	+79504264367	\N	t	2025-12-24 08:07:56.053	2025-12-26 07:47:58.47308
+11	anna@example.com	pbkdf2_sha256$600000$TYjvZNaQD3MkXztBcuvnZj$K7/SsEcFEZrf25jvE7GQoDTZd/qy7CLDSeRoJrfnV3c=	string	string	string	\N	t	2025-12-24 08:17:49.075	2025-12-26 07:47:58.47308
+12	Petrov@example.com	pbkdf2_sha256$600000$U5mEvo7wr7OpzpUNZ1uQ4k$/jgPM7W1Q3fdR9B9/ueDu8HJQ98rvl/spodRYC/Bfj0=	string	string	string	\N	f	2025-12-24 05:18:04.57	2025-12-26 07:47:58.47308
+13	dan@yandex.ru	pbkdf2_sha256$600000$wzKYYHXpbhFwkKIRQ7Rl1t$hrG1bmw61eeN5FgWiTYMK4IcebZgdDEm1sVuoyb8oqQ=	Nikita	danil	3424234	\N	t	2025-12-24 03:04:06.298	2025-12-26 07:47:58.47308
+14	bimbim@example.com	pbkdf2_sha256$600000$CQr9Eg6adNDmq6XOLYsflN$sYuvcwHcOXSvkbBIkBhdWEfSX+eFCBq3se289vKbdTw=	string	string	string	\N	t	2025-12-25 02:13:43.302	2025-12-26 07:47:58.47308
+18	ekaterina.lebedeva@edu.ru	hash18	Екатерина	Лебедева	+79004444888	\N	t	2025-12-24 10:52:05.609	2025-12-26 07:47:58.47308
+19	dmitry.kovalev@edu.ru	hash19	Дмитрий	Ковалев	+79005555999	https://cdn.coursehunter.net/courses/540x320/devops-ci-cd-nepreryvnaya-integraciya-dostavka-dlya-nachinayushchih.webp	t	2025-12-24 10:52:05.609	2025-12-26 07:47:58.47308
+20	svetlana.orlova@edu.ru	hash20	Светлана	Орлова	+79006666111	https://via.placeholder.com/300x200.png?text=UI/UX	t	2025-12-24 10:52:05.609	2025-12-26 07:47:58.47308
+21	oleg.novikov@edu.ru	hash21	Олег	Новиков	+79007777222	https://via.placeholder.com/300x200.png?text=Big+Data	t	2025-12-24 10:52:05.609	2025-12-26 07:47:58.47308
+22	andrey.melnikov@edu.ru	hash22	Андрей	Мельников	+79008888333	https://via.placeholder.com/300x200.png?text=Cybersecurity	t	2025-12-24 10:52:05.609	2025-12-26 07:47:58.47308
+23	natalya.sergeeva@edu.ru	hash23	Наталья	Сергеева	+79009999444	https://via.placeholder.com/300x200.png?text=Blockchain	t	2025-12-24 10:52:05.609	2025-12-26 07:47:58.47308
 \.
 
 
@@ -1388,6 +1352,20 @@ COPY public.users_roles (user_id, role_id) FROM stdin;
 6	3
 7	3
 8	3
+10	3
+11	3
+12	3
+13	3
+14	3
+15	2
+16	2
+17	2
+18	2
+19	2
+20	2
+21	2
+22	2
+23	2
 \.
 
 
@@ -1444,7 +1422,7 @@ SELECT pg_catalog.setval('public.auth_user_user_permissions_id_seq', 1, false);
 -- Name: categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.categories_id_seq', 2, true);
+SELECT pg_catalog.setval('public.categories_id_seq', 8, true);
 
 
 --
@@ -1465,7 +1443,7 @@ SELECT pg_catalog.setval('public.comments_id_seq', 10, true);
 -- Name: courses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.courses_id_seq', 4, true);
+SELECT pg_catalog.setval('public.courses_id_seq', 14, true);
 
 
 --
@@ -1486,7 +1464,7 @@ SELECT pg_catalog.setval('public.courses_user_user_permissions_id_seq', 1, false
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, false);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 8, true);
 
 
 --
@@ -1549,7 +1527,7 @@ SELECT pg_catalog.setval('public.submissions_id_seq', 5, true);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 9, true);
+SELECT pg_catalog.setval('public.users_id_seq', 23, true);
 
 
 --
@@ -2373,5 +2351,5 @@ ALTER TABLE ONLY public.users_roles
 -- PostgreSQL database dump complete
 --
 
-\unrestrict wtl2ms8KRnMEeTUN9ByYUvTImHP2deorDxUHreKBKp4CbNXXQzcQ3W9sUKoVkBc
+\unrestrict AzzPT5kFz201KTZVOiImhw9ZtOwzeiZsVHilwpBfh0L6tHoIGpq3gb9IsZErvq2
 
