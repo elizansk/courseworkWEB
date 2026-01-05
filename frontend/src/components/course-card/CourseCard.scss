@@ -14,53 +14,55 @@
 
   .course-info {
     padding: 1rem;
+    width: 100%;
 
-    img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 12px 12px 0 0;
-      margin-bottom: 1rem;
-    }
+    display: flex;
+    flex-direction: column;   /* ВКЛЮЧАЕМ FLEX */
+    height: 100%;              /* ЗАНИМАЕМ ВСЮ КАРТОЧКУ */
+  }
 
-    .course-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #1f1f3e;
-      margin-bottom: 0.5rem;
-      line-height: 1.3;
-    }
+  img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 1rem;
+  }
 
-    .course-desc {
-      font-size: 1rem;
-      color: #444;
-      margin-bottom: 0.5rem;
-      line-height: 1.5;
-      max-height: 3.6em; /* обрезает длинный текст */
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  .course-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1f1f3e;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
 
-    .course-meta {
-      display: block;
-      font-size: 0.85rem;
-      color: #888;
-      margin-bottom: 1rem;
-    }
+  .course-desc {
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
 
-    .buy-button {
-      padding: 0.5rem 1rem;
-      background-color: #f2c94c;
-      color: #1f1f3e;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.2s;
+    max-height: 3.6em;
+    overflow: hidden;
 
-      &:hover {
-        background-color: #e0b500;
-      }
+    flex-grow: 1;              /* 🟡 ВАЖНО — ЗАПОЛНЯЕТ ПРОСТРАНСТВО */
+  }
+
+  .buy-button {
+    padding: 0.5rem 1rem;
+    background-color: #f2c94c;
+    color: #1f1f3e;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+
+    margin-top: auto;          /* 🟢 КНОПКА ВСЕГДА У НИЗА */
+
+    &:hover {
+      background-color: #e0b500;
     }
   }
 }

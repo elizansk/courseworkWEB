@@ -4,16 +4,16 @@ import type { Course } from "../../types/course.ts";
 import "./CourseDetailPage.scss";
 
 const CourseDetailPage: React.FC = () => {
-    const { id } = useParams();
+    const { slug } = useParams();
     const navigate = useNavigate();
     const [course, setCourse] = useState<Course | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!id) return;
+        if (!slug) return;
 
-        fetch(`http://127.0.0.1:8000/api/v1/courses/${id}/`)
+        fetch(`http://127.0.0.1:8000/api/v1/courses/${slug}/`)
             .then(res => {
                 if (!res.ok) throw new Error("Ошибка при загрузке курса");
                 return res.json();
@@ -27,14 +27,17 @@ const CourseDetailPage: React.FC = () => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [id]);
+    }, [slug]);
 
     if (loading) return <div>Загрузка курса...</div>;
     if (error) return <div>Ошибка: {error}</div>;
     if (!course) return <div>Курс не найден</div>;
 
-    const handleBuy = () => {
-        alert(`Вы купили курс "${course.title}"`);
+    // 🔹 Новая функция покупки
+    const handleBuy = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        e.stopPropagation(); // чтобы клик не всплывал
+        navigate("/payment", { state: { course } }); // переходим на страницу оплаты и передаем курс
     };
 
     return (

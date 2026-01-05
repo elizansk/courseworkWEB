@@ -7,7 +7,6 @@ const CoursesPage: React.FC = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/v1/courses/")
             .then(res => {
@@ -15,7 +14,7 @@ const CoursesPage: React.FC = () => {
                 return res.json();
             })
             .then((data) => {
-                setCourses(data.results);   // results — как и раньше
+                setCourses(data.results);
                 setLoading(false);
             })
             .catch((err) => {
@@ -32,8 +31,8 @@ const CoursesPage: React.FC = () => {
         <div className="courses-page">
             <h1>Все курсы</h1>
             <div className="courses-grid">
-                {courses.slice(0, 9).map(course => (
-                    <CourseCard key={course.id} course={course} />
+                {courses.map(course => (
+                    <CourseCard key={course.slug} course={course} onBuy={undefined}/>
                 ))}
             </div>
         </div>

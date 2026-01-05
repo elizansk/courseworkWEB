@@ -1,0 +1,85 @@
+@use "../../styles/variables.scss";
+@use "sass:color";
+
+.payment-section {
+  padding: 8rem 2rem;
+  background: linear-gradient(135deg, variables.$color-indigo, variables.$color-purple);
+  color: variables.$color-text-light-bg;
+  text-align: center;
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+
+    h2 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .intro {
+      font-size: 1.2rem;
+      margin-bottom: 3rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .payment-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 2.5rem;
+      text-align: left;
+      transition: all 0.3s;
+
+      &:hover {
+        transform: translateY(-8px);
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1.5rem;
+
+        label {
+          margin-bottom: 0.5rem;
+          font-weight: 500;
+        }
+
+        input {
+          padding: 0.8rem 1rem;
+          border-radius: 8px;
+          border: none;
+          outline: none;
+          font-size: 1rem;
+        }
+      }
+
+      .form-row {
+        display: flex;
+        gap: 1rem;
+
+        @media (max-width: 480px) {
+          flex-direction: column;
+        }
+      }
+
+      .btn {
+        background: variables.$color-accent;
+        color: variables.$color-bg-dark;
+        padding: 0.8rem 2rem;
+        border-radius: 8px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+
+
+
+        &:hover {
+          background: lighten(variables.$color-accent, 10%);
+        }
+      }
+    }
+  }
+}

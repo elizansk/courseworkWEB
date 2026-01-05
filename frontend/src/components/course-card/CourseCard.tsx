@@ -1,7 +1,7 @@
 import React from "react";
 import "./CourseCard.scss";
 import type { Course } from "../../types/course.ts";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface CourseCardProps {
     course: Course;
@@ -9,18 +9,21 @@ interface CourseCardProps {
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({ course, onBuy }) => {
-    const handleBuy = (e: React.MouseEvent) => {
+    const navigate = useNavigate();
+
+    const handleBuy = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        e.stopPropagation();
         if (onBuy) onBuy(course);
-        else alert(`Вы купили курс "${course.title}"`);
+        else navigate("/payment", { state: { course } });
     };
 
     return (
-        <Link to={`/course/${course.id}`} className="course-card">
+        <Link to={`/course/${course.slug}`} className="course-card">
             <div className="course-info">
-                <img src={course.thumbnail_url || "../assets/react-course.png"} alt={course.title} />
+                <img src={course.thumbnail_url} alt={course.title} />
                 <h3 className="course-title">{course.title}</h3>
-                <p className="course-desc">{course. short_desc}</p>
+                <p className="course-desc">{course.short_desc}</p>
                 <button className="buy-button" onClick={handleBuy}>
                     Купить
                 </button>

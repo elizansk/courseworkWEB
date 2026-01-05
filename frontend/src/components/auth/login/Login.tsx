@@ -14,22 +14,46 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         setError("");
 
         try {
-         //   const response = await fetch("http://127.0.0.1:8000/api/v1/auth/login/", {
-         //       method: "POST",
-         //       headers: { "Content-Type": "application/json" },
-         //       body: JSON.stringify({ email, password }),//  });
-            //  const data = await response.json();
+            const response = await fetch("http://127.0.0.1:8000/api/v1/auth/login/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
 
-           // if (response.ok) {
-            //    let user = JSON.stringify(data);
-            const user = {name: "test", password: "test"};
-            console.log(user);
-            localStorage.setItem("user", JSON.stringify(user));
-            onLoginSuccess(user);
-            //    onLoginSuccess(data);
-           // } else {
-           //     setError(data.error || "Ошибка входа");
-         //   }
+            const data = await response.json();
+
+            // успешный вход
+            if (response.ok) {
+
+                // если backend выдает JWT (Django SimpleJWT)
+                if (data.access) {
+                    localStorage.setItem("access", data.access);
+                }
+
+                if (data.refresh) {
+                    localStorage.setItem("refresh", data.refresh);
+                }
+
+                // сохраняем пользователя
+                localStorage.setItem("user", JSON.stringify(data));
+
+                // уведомляем родителя
+                onLoginSuccess(data);
+            }
+            else {
+                setError(
+                    data.detail ||
+                    data.error ||
+                    "Ошибка входа. Проверь email или пароль"
+                );
+            }
+
         } catch (err) {
             setError("Не удалось подключиться к серверу");
         }
@@ -38,19 +62,23 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     return (
         <div className="auth-form">
             <h2>Вход в систему</h2>
+
             <input
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
+
             <input
                 type="password"
                 placeholder="Пароль"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
+
             <button onClick={handleLogin}>Войти</button>
+
             {error && <div className="error">{error}</div>}
         </div>
     );
