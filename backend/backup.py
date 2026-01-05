@@ -54,13 +54,3 @@ subprocess.run([
 
 print(f"[INFO] Дамп сохранён: {dump_file}")
 
-# ===== 2. Бэкап медиа-файлов =====
-media_src = settings.MEDIA_ROOT
-if media_src and os.path.isdir(media_src):
-    media_dst = os.path.join(backup_path, "media")
-    print(f"[INFO] Копируем медиа-файлы из {media_src} -> {media_dst}")
-    shutil.copytree(media_src, media_dst)
-else:
-    print("[WARN] MEDIA_ROOT не задан или не существует — пропускаем медиа")
-
-print("[INFO] Резервное копирование завершено!")
