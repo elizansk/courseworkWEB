@@ -6,13 +6,7 @@ SECRET_KEY = 'django-insecure-...любой-ключ...'  # можно оста�
 DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-
-
-SIMPLE_JWT = {
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
+AUTH_USER_MODEL = 'courses.User'
 
 
 INSTALLED_APPS = [
@@ -75,6 +69,18 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+# settings.py
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'USE_SESSION_AUTH': False,  # чтобы не мешалась Basic auth
+}
 
 # Пароли (можно оставить пустым для разработки)
 AUTH_PASSWORD_VALIDATORS = []
@@ -87,18 +93,6 @@ USE_TZ = True
 STATIC_URL = '/static/'  # ← ОБЯЗАТЕЛЬНО!
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-    ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -110,9 +104,15 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
 }
-
 from datetime import timedelta
+
 SIMPLE_JWT = {
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_HEADER_TYPES': ('Bearer',),
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+
+

@@ -61,6 +61,39 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
+
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Course, Enrollment
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def add_course_after_payment(request, course_id):
+    user = request.user
+    
+    try:
+        course = Course.objects.get(id=course_id)
+    except Course.DoesNotExist:
+        return Response(
+            {'detail': f'Курс с id={course_id} не найден'}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+    
+    enrollment, created = Enrollment.objects.get_or_create(user=user, course=course)
+    
+    if created:
+        return Response(
+            {'detail': f'Курс "{course.title}" успешно добавлен пользователю {user.email}'}, 
+            status=status.HTTP_201_CREATED
+        )
+    else:
+        return Response(
+            {'detail': f'Пользователь уже записан на курс "{course.title}"'},
+            status=status.HTTP_200_OK
+        )
+
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
 

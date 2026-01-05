@@ -175,6 +175,8 @@ class CourseDetailSerializer(serializers.ModelSerializer):
         modules = obj.modules.filter(is_deleted=False).order_by('order_num')
         return ModuleSerializer(modules, many=True, context=self.context).data
 
+class BuyCourseSerializer(serializers.Serializer):
+    course_id = serializers.IntegerField()
 
 class CourseSerializer(serializers.ModelSerializer):
     instructor = UserSerializer(read_only=True)
