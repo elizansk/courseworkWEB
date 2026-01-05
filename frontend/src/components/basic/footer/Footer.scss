@@ -8,8 +8,13 @@
   align-items: center;
   flex-wrap: wrap;
   font-size: 0.9rem;
+  bottom: 0;
+  z-index: 100;
+  left: 0;
+  width: 100%;
   color: variables.$color-text-light-bg;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  position: sticky;
 
   > div {
     color: variables.$color-text-light-bg;

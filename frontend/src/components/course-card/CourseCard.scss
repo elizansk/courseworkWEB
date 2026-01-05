@@ -1,0 +1,68 @@
+.course-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  .course-info {
+    padding: 1rem;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;   /* ВКЛЮЧАЕМ FLEX */
+    height: 100%;              /* ЗАНИМАЕМ ВСЮ КАРТОЧКУ */
+  }
+
+  img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 1rem;
+  }
+
+  .course-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1f1f3e;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .course-desc {
+    font-size: 1rem;
+    color: #444;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+
+    max-height: 3.6em;
+    overflow: hidden;
+
+    flex-grow: 1;              /* 🟡 ВАЖНО — ЗАПОЛНЯЕТ ПРОСТРАНСТВО */
+  }
+
+  .buy-button {
+    padding: 0.5rem 1rem;
+    background-color: #f2c94c;
+    color: #1f1f3e;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+
+    margin-top: auto;          /* 🟢 КНОПКА ВСЕГДА У НИЗА */
+
+    &:hover {
+      background-color: #e0b500;
+    }
+  }
+}

@@ -1,0 +1,91 @@
+import { useState } from "react";
+import "../../styles/variables.scss";
+import "./PayPage.scss";
+
+const PayPage = () => {
+    const [formData, setFormData] = useState({
+        name: "",
+        cardNumber: "",
+        expiry: "",
+        cvv: "",
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        alert("Оплата успешно отправлена!");
+    };
+
+    return (
+
+        <section className="payment-section">
+            <div className="container">
+                <h2>Оплата курса</h2>
+                <p className="intro">
+                    Введите номер карты и получите доступ к курсу прямо сейчас.
+                </p>
+
+                <div className="card payment-card">
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label>Номер карты</label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Имя на карте</label>
+                            <input
+                                type="text"
+                                name="cardNumber"
+                                value={formData.cardNumber}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Срок действия</label>
+                                <input
+                                    type="text"
+                                    name="expiry"
+                                    placeholder="MM/YY"
+                                    value={formData.expiry}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+
+                            <div className="form-group">
+                                <label>CVV</label>
+                                <input
+                                    type="text"
+                                    name="cvv"
+                                    value={formData.cvv}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <button type="submit" className="btn">
+                            Оплатить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default PayPage;

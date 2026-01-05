@@ -1,0 +1,17 @@
+@use "../../styles/variables.scss";
+
+.courses-page {
+  padding: 2rem;
+
+  h1 {
+    color: variables.$color-text-light-bg;
+    margin-bottom: 2rem;
+  }
+
+  .courses-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+}
