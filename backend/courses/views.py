@@ -275,9 +275,17 @@ class LessonDetailView(generics.RetrieveAPIView):
             submissions_qs = Submission.objects.filter(user=user)
 
         return Lesson.objects.filter(is_deleted=False).prefetch_related(
-            Prefetch('assignment', queryset=Assignment.objects.all()),
-            Prefetch('submissions', queryset=submissions_qs)
+    Prefetch(
+        'assignment_set',
+        queryset=Assignment.objects.prefetch_related(
+            Prefetch(
+                'submission_set',
+                queryset=submissions_qs
+            )
         )
+    )
+)
+
 
     def get_object(self):
         lesson = super().get_object()
