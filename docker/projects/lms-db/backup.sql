@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict groEC1c3tbToUaccsbc9NBySdFbvGFb8haLEuivum3hSvVntXCVZJ8DOfRghKGv
+\restrict daOci35QLggtrQOtc283Qtn9G6P77Cg3ZOJe5wQHQ2F6KNGb1Xluh3AnbcESFWq
 
 -- Dumped from database version 15.15 (Debian 15.15-1.pgdg13+1)
 -- Dumped by pg_dump version 15.15 (Debian 15.15-1.pgdg13+1)
@@ -24,16 +24,11 @@ SET row_security = off;
 
 CREATE FUNCTION public.update_updated_at_column() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-
-BEGIN
-
-    NEW.updated_at = NOW();
-
-    RETURN NEW;
-
-END;
-
+    AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
 $$;
 
 
@@ -1374,6 +1369,7 @@ COPY public.enrollments (id, user_id, course_id, payment_id, enrolled_at, comple
 5	27	6	\N	2026-01-05 09:49:25.622083	\N	0	active
 6	28	8	\N	2026-01-05 10:18:21.528155	\N	0	active
 7	28	11	\N	2026-01-05 11:40:44.376319	\N	0	active
+8	28	14	\N	2026-01-07 13:35:01.500942	\N	0	active
 \.
 
 
@@ -1839,7 +1835,7 @@ SELECT pg_catalog.setval('public.django_migrations_id_seq', 30, true);
 -- Name: enrollments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.enrollments_id_seq', 7, true);
+SELECT pg_catalog.setval('public.enrollments_id_seq', 8, true);
 
 
 --
@@ -2842,5 +2838,5 @@ ALTER TABLE ONLY public.users_user_permissions
 -- PostgreSQL database dump complete
 --
 
-\unrestrict groEC1c3tbToUaccsbc9NBySdFbvGFb8haLEuivum3hSvVntXCVZJ8DOfRghKGv
+\unrestrict daOci35QLggtrQOtc283Qtn9G6P77Cg3ZOJe5wQHQ2F6KNGb1Xluh3AnbcESFWq
 
