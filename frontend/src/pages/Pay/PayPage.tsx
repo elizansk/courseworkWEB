@@ -1,8 +1,12 @@
 import { useState } from "react";
 import "../../styles/variables.scss";
+import { useParams } from "react-router-dom";
 import "./PayPage.scss";
+import {useAuth} from "../../context/AuthContext.tsx";
 
 const PayPage = () => {
+    const { courseId } = useParams();
+    const { user } = useAuth();
     const [formData, setFormData] = useState({
         name: "",
         cardNumber: "",
@@ -15,9 +19,20 @@ const PayPage = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-        alert("Оплата успешно отправлена!");
+
+        const res = await fetch(`http://127.0.0.1:8000/api/v1/buy-course/${courseId}/`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${user?.access}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (res.ok) alert("Курс оплачен");
     };
 
     return (

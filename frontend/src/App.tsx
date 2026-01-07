@@ -29,7 +29,7 @@ const App = () => (
                     <Route path="/profile" element={<ProfilePage userRole="student" />} />
                     <Route path="/teacher" element={<ProfilePage userRole="teacher" />} />
                     <Route path="/admin" element={<ProfilePage userRole="admin" />} />
-                    <Route path="/payment" element={<PayPage />} />
+                    <Route path="/payment/:courseId" element={<PayPage />} />
 
                 </Route>
             </Route>
