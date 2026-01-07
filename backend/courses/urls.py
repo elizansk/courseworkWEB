@@ -47,4 +47,7 @@ urlpatterns = [
     
     # ===== ADMIN-ПАНЕЛЬ =====
     path('admin/', include(admin_router.urls), name='admin-panel'),
+
+    path('buy-course/<int:course_id>/', views.add_course_after_payment, name='buy-course'),
+
 ]

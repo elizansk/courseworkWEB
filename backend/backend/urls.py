@@ -8,8 +8,7 @@ schema_view = get_schema_view(
    openapi.Info(
       title="Course API",
       default_version='v1',
-      description="API для сайта курсов",
-      contact=openapi.Contact(email="admin@example.com"),
+      description="API для курсов",
    ),
    public=True,
    permission_classes=(permissions.AllowAny,),
