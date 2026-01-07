@@ -117,6 +117,23 @@ class UserEnrollmentsView(generics.ListAPIView):
             user=self.request.user,
             status='active'
         ).select_related('course')
+    
+from .services.reviews import can_leave_review
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+
+class CourseReviewAccessView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, course_id):
+        course = get_object_or_404(Course, id=course_id)
+
+        return Response({
+            "can_leave_review": can_leave_review(request.user, course)
+        })
+
 
 class InstructorProfileView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
