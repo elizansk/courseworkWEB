@@ -4,13 +4,14 @@ import AuthPage from "./pages/Auth/AuthPage";
 import HomePage from "./pages/Home/HomePage";
 import PridePage from "./pages/Pride/PridePage.tsx";
 import ProfilePage from "./pages/Profile/ProfilePage";
-
+import CoursesPage from "./pages/Courses/CoursesPage.tsx";
+import CourseDetailPage from "./pages/CourseDetailPage/CourseDetailPage.tsx";
+import PayPage from "./pages/Pay/PayPage";
+import LessonsPage from "./pages/Lessons/LessonsPage.tsx";
 
 import { MainLayout } from "./layout/MainLayout.tsx";
 import { AuthLayout } from "./layout/AuthLayout";
-import CoursesPage from "./pages/Courses/CoursesPage.tsx";
-import CourseDetailPage from "./pages/CourseDetailPage/CourseDetailPage.tsx";
-import PayPage from "./pages/Pay/PayPage"; // <-- импортируем страницу оплаты
+
 
 
 const App = () => (
@@ -24,10 +25,11 @@ const App = () => (
                     <Route path="/pride" element={<PridePage />} />
                     <Route path="/courses" element={<CoursesPage />} />
                     <Route path="/course/:slug" element={<CourseDetailPage />} />
+                    <Route path="/course/:slug/lessons" element={<LessonsPage />} />
                     <Route path="/profile" element={<ProfilePage userRole="student" />} />
                     <Route path="/teacher" element={<ProfilePage userRole="teacher" />} />
                     <Route path="/admin" element={<ProfilePage userRole="admin" />} />
-                    <Route path="/payment" element={<PayPage />} />
+                    <Route path="/payment/:courseId" element={<PayPage />} />
 
                 </Route>
             </Route>

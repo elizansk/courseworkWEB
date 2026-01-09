@@ -1,9 +1,9 @@
 import React from "react";
-import StudentPanel from "./StudentPanel";
+import StudentCoursePanel from "./StudentCoursePanel.tsx";
 
 const TeacherPanel: React.FC = () => (
     <div>
-        <StudentPanel />
+        <StudentCoursePanel />
         <section>
             <h2>Управление моими курсами</h2>
             <p>Здесь вы можете добавлять, редактировать и отслеживать студентов своих курсов.</p>

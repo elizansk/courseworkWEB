@@ -15,7 +15,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, onBuy }) => {
         e.preventDefault();
         e.stopPropagation();
         if (onBuy) onBuy(course);
-        else navigate("/payment", { state: { course } });
+        else {
+            console.log(`/payment/${course.id}`)
+            navigate(`/payment/${course.id}`, { state: { course } });
+
+        }
     };
 
     return (
