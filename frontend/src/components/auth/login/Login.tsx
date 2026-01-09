@@ -30,6 +30,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
             // успешный вход
             if (response.ok) {
+                console.log(data)
 
                 // если backend выдает JWT (Django SimpleJWT)
                 if (data.access) {
