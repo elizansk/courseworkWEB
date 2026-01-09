@@ -5,6 +5,7 @@ import type { Enrollment } from "../../types/Enrollment.ts";
 import {useAuth} from "../../context/AuthContext.tsx";
 
 const StudentCoursePanel: React.FC = () => {
+    const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const { user } = useAuth();
     const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
@@ -17,7 +18,7 @@ const StudentCoursePanel: React.FC = () => {
                 console.log(`${user?.access}`)
                 console.log(`${localStorage.getItem("access")}`)
                 const response = await fetch(
-                    "http://127.0.0.1:8000/api/v1/profile/enrollments/",
+                    `${API_URL}/profile/enrollments/`,
                     {
                         headers: {
                             "Authorization": `Bearer ${user?.access}`,

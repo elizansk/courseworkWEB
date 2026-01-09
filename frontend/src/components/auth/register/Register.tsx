@@ -6,6 +6,7 @@ interface RegisterProps {
 }
 
 const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
+    const API_URL = import.meta.env.VITE_API_URL;
     const [formData, setFormData] = useState({
         email: "",
         first_name: "",
@@ -31,7 +32,7 @@ const Register: React.FC<RegisterProps> = ({ onRegisterSuccess }) => {
 
         try {
             console.log(JSON.stringify(formData))
-            const response = await fetch("http://127.0.0.1:8000/api/v1/auth/register/", {
+            const response = await fetch(`${API_URL}/auth/register/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),

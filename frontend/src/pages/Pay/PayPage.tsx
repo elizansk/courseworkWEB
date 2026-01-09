@@ -5,6 +5,7 @@ import "./PayPage.scss";
 import {useAuth} from "../../context/AuthContext.tsx";
 
 const PayPage = () => {
+    const API_URL = import.meta.env.VITE_API_URL;
     const { courseId } = useParams();
     const { user } = useAuth();
     const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ const PayPage = () => {
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
-        const res = await fetch(`http://127.0.0.1:8000/api/v1/buy-course/${courseId}/`, {
+        const res = await fetch(`${API_URL}/buy-course/${courseId}/`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${user?.access}`,

@@ -1,5 +1,6 @@
 import React from "react";
-import StudentCoursePanel from "./StudentCoursePanel.tsx";
+import StudentCoursePanel from "../../components/studentCoursePanel/StudentCoursePanel.tsx";
+
 
 const TeacherPanel: React.FC = () => (
     <div>
