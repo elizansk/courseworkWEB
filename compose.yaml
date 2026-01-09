@@ -39,6 +39,25 @@ services:
       - "80:80"
     depends_on:
       - backend
+      - 
+  backup:
+    image: prodrigestivill/postgres-backup-local
+    container_name: postgres_backup
+    restart: always
+    depends_on:
+      - db
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: KyrsovayaBD
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
 
+      SCHEDULE: "@daily"
+
+      BACKUP_KEEP_DAYS: 7
+      BACKUP_KEEP_WEEKS: 4
+      BACKUP_KEEP_MONTHS: 6
+    volumes:
+      - ./backups:/backups
 volumes:
   postgres_data:
