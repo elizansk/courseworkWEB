@@ -250,11 +250,6 @@ class SubmissionCreateSerializer(serializers.ModelSerializer):
         # Проверка, что ДЗ ещё не отправляли
         if Submission.objects.filter(user=user, assignment=assignment).exists():
             raise serializers.ValidationError("Вы уже отправили это задание")
-
-        # Проверка дедлайна
-        if assignment.due_date and assignment.due_date < timezone.now():
-            raise serializers.ValidationError("Срок сдачи задания истёк")
-
         return data
 class SubmissionGradeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -435,3 +430,33 @@ class LessonSerializer(serializers.ModelSerializer):
             'is_locked',
             'assignments',
         ]
+
+# serializers.py
+from rest_framework import serializers
+from .models import Module, Lesson, Assignment, Submission
+
+class SubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Submission
+        fields = ['id', 'user', 'content', 'file_url', 'score', 'feedback', 'is_graded']
+
+class AssignmentWithSubmissionsSerializer(serializers.ModelSerializer):
+    submissions = SubmissionSerializer(many=True, read_only=True, source='submission_set')
+
+    class Meta:
+        model = Assignment
+        fields = ['id', 'title', 'description', 'submissions']
+
+class LessonWithAssignmentsSerializer(serializers.ModelSerializer):
+    assignments = AssignmentWithSubmissionsSerializer(many=True, read_only=True, source='assignment_set')
+
+    class Meta:
+        model = Lesson
+        fields = ['id', 'title', 'order_num', 'duration_min', 'is_locked', 'assignments']
+
+class ModuleWithLessonsAndAssignmentsSerializer(serializers.ModelSerializer):
+    lessons = LessonWithAssignmentsSerializer(many=True, read_only=True, source='lesson_set')
+
+    class Meta:
+        model = Module
+        fields = ['id', 'title', 'description', 'order_num', 'lessons']
