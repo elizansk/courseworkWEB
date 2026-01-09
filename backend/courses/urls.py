@@ -17,6 +17,8 @@ admin_router.register(r'enrollments', views.AdminEnrollmentViewSet, basename='ad
 admin_router.register(r'ratings', views.AdminRatingViewSet, basename='admin-ratings')
 admin_router.register(r'assignments', views.AdminAssignmentViewSet, basename='admin-assignments')
 admin_router.register(r'submissions', views.AdminSubmissionViewSet, basename='admin-submissions')
+admin_router.register(r'admin/courses', views.CourseAdminViewSet, basename="admin-change-curs")
+
 
 urlpatterns = [
     # ===== АУТЕНТИФИКАЦИЯ =====
@@ -36,18 +38,41 @@ urlpatterns = [
     path('courses/', views.CourseListView.as_view(), name='courses-list'),
     path('courses/<slug:slug>/', views.CourseDetailView.as_view(), name='course-detail'),
     
+
+    path('courses/<int:course_id>/modules/', views.CourseModulesView.as_view(), name='course-modules'),
+
+    # ===== МОИ КУРСЫ ======
+    path('my-courses/', views.MyCoursesView.as_view()),
+
     # ===== СТРАНИЦА УРОКА =====
     path('lessons/<int:pk>/', views.LessonDetailView.as_view(), name='lesson-detail'),
+    # Студент отправляет домашнее задание
+
+    path('submissions/', views.SubmissionCreateView.as_view(), name='submission-create'),
     
+    path('modules/<int:id>/', views.ModuleDetailView.as_view(), name='module-detail'),
+
+    path('modules/<int:module_id>/lessons/', views.ModuleLessonsView.as_view(), name='module-lessons'),
+
+    # Преподаватель ставит оценку
+    path('submissions/<int:pk>/grade/', views.SubmissionGradeView.as_view(), name='submission-grade'),
+   
+
+    # Список отправленных заданий (для преподавателя)
+    path('submissions/list/', views.SubmissionListView.as_view(), name='submission-list'),
+
+    # Детали конкретного ДЗ
+    path('submissions/<int:pk>/', views.SubmissionDetailView.as_view(), name='submission-detail'),
+
     # ===== ОТЗЫВЫ И ОЦЕНКИ =====
     path('ratings/', views.RatingListView.as_view(), name='rating-list'),
-    
+    path('admin/export-full-db/', views.EnrollmentExportExcelView.as_view(), name='export-full-db'),
     # ===== ПОКУПКА / ЗАПИСЬ НА КУРС =====
     path('enrollments/', views.EnrollmentCreateView.as_view(), name='enrollment-create'),
     
     # ===== ADMIN-ПАНЕЛЬ =====
     path('admin/', include(admin_router.urls), name='admin-panel'),
-
+ 
     path('buy-course/<int:course_id>/', views.add_course_after_payment, name='buy-course'),
 
 ]
