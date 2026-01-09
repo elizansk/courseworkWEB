@@ -9,10 +9,10 @@ interface CourseCardProps {
 const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
     return (
         <div className="course-card">
-            <img src={course.image} alt={course.title} />
+            <img src={course.thumbnail_url} alt={course.title} />
             <div className="content">
                 <h3>{course.title}</h3>
-                <p className="author">{course.author}</p>
+                <p className="author">{course?.duration_hours}</p>
                 <p className="desc">{course.description}</p>
                 <div className="footer">
                     <span className="price">{course.price} ₽</span>

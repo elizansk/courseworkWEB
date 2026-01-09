@@ -6,6 +6,7 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
+    const API_URL = import.meta.env.VITE_API_URL;
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [error, setError] = useState<string>("");
@@ -14,7 +15,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         setError("");
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/v1/auth/login/", {
+            const response = await fetch(`${API_URL}/auth/login/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -30,6 +31,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
             // успешный вход
             if (response.ok) {
+                console.log(data)
 
                 // если backend выдает JWT (Django SimpleJWT)
                 if (data.access) {

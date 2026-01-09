@@ -4,11 +4,12 @@ import CourseCard from "../../components/course-card/CourseCard";
 import type { Course } from "../../types/course";
 
 const CoursesPage: React.FC = () => {
+    const API_URL = import.meta.env.VITE_API_URL;
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/v1/courses/")
+        fetch(`${API_URL}/courses/`)
             .then(res => {
                 if (!res.ok) throw new Error("Ошибка при загрузке курсов");
                 return res.json();

@@ -1,5 +1,5 @@
 import React from "react";
-import "./header.scss";
+import "./Header.scss";
 import LogoImg from "../../../assets/logo1.png";
 import { useAuth } from "../../../context/AuthContext";
 

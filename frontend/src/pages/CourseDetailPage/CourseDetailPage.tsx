@@ -4,6 +4,7 @@ import type { Course } from "../../types/course.ts";
 import "./CourseDetailPage.scss";
 
 const CourseDetailPage: React.FC = () => {
+    const API_URL = import.meta.env.VITE_API_URL;
     const { slug } = useParams();
     const navigate = useNavigate();
     const [course, setCourse] = useState<Course | null>(null);
@@ -13,7 +14,7 @@ const CourseDetailPage: React.FC = () => {
     useEffect(() => {
         if (!slug) return;
 
-        fetch(`http://127.0.0.1:8000/api/v1/courses/${slug}/`)
+        fetch(`${API_URL}/courses/${slug}/`)
             .then(res => {
                 if (!res.ok) throw new Error("Ошибка при загрузке курса");
                 return res.json();
