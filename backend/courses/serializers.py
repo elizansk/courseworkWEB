@@ -83,18 +83,9 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ['id', 'name', 'slug', 'parent']
 
-# ===== УРОКИ =====
-class LessonSerializer(serializers.ModelSerializer):
-    is_completed = serializers.SerializerMethodField()
-    assignment = serializers.SerializerMethodField()
 
-    class Meta:
-        model = Lesson
-        fields = [
-            'id', 'title', 'content', 'video_url',
-            'duration_min', 'order_num', 'is_locked',
-            'is_completed', 'assignment'
-        ]
+
+
     
     def get_is_completed(self, obj):
         user = self.context['request'].user
@@ -197,16 +188,27 @@ class CourseAdminSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class LessonShortSerializer(serializers.ModelSerializer):
+    is_locked = serializers.SerializerMethodField()
+
     class Meta:
         model = Lesson
         fields = [
             'id',
             'title',
+            'video_url',
             'order_num',
             'duration_min',
             'is_locked',
         ]
 
+    def get_is_locked(self, obj):
+        return False  # 🔓 ВСЕ УРОКИ ОТКРЫТЫ
+    def get_assignments(self, obj):
+        from .models import Assignment
+        from .serializers import AssignmentSerializer
+
+        assignments = Assignment.objects.filter(lesson=obj)
+        return AssignmentSerializer(assignments, many=True).data
 
 class ModuleWithLessonsSerializer(serializers.ModelSerializer):
     lessons = LessonShortSerializer(
@@ -380,3 +382,22 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+
+# ===== УРОКИ =====
+class LessonSerializer(serializers.ModelSerializer):
+    assignments = AssignmentSerializer(
+        many=True,
+        read_only=True,
+        source='assignment_set'
+    )
+
+    class Meta:
+        model = Lesson
+        fields = [
+            'id',
+            'title',
+            'order_num',
+            'duration_min',
+            'is_locked',
+            'assignments',
+        ]

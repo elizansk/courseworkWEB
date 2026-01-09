@@ -125,36 +125,16 @@ class EnrollmentExportExcelView(APIView):
         wb.save(response)
         return response
 
-
 class ModuleLessonsView(generics.ListAPIView):
     serializer_class = LessonSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        module_id = self.kwargs['module_id']
-        return Lesson.objects.filter(module_id=module_id, is_deleted=False).order_by('order_num')
+        return Lesson.objects.filter(
+            module_id=self.kwargs['module_id'],
+            is_deleted=False
+        ).order_by('order_num')
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        lessons_data = []
-
-        for i, lesson in enumerate(queryset):
-            # проверка завершения предыдущего урока
-            if i == 0:
-                lesson.is_locked = False
-            else:
-                prev_lesson = queryset[i-1]
-                prev_completed = Submission.objects.filter(
-                    assignment__lesson=prev_lesson,
-                    user=request.user,
-                    is_graded=True
-                ).exists()
-                lesson.is_locked = not prev_completed
-            lesson.save(update_fields=['is_locked'])
-
-            lessons_data.append(LessonSerializer(lesson, context={'request': request}).data)
-
-        return Response(lessons_data)
 
 class SubmissionGradeView(generics.UpdateAPIView):
     queryset = Submission.objects.all()
