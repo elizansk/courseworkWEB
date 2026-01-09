@@ -65,7 +65,8 @@ urlpatterns = [
     path('submissions/<int:pk>/', views.SubmissionDetailView.as_view(), name='submission-detail'),
 
     # ===== ОТЗЫВЫ И ОЦЕНКИ =====
-    path('ratings/', views.RatingListView.as_view(), name='rating-list'),
+    path('courses/<int:course_id>/ratings/', views.RatingListView.as_view(), name='course-ratings'),
+    
     path('admin/export-full-db/', views.EnrollmentExportExcelView.as_view(), name='export-full-db'),
     # ===== ПОКУПКА / ЗАПИСЬ НА КУРС =====
     path('enrollments/', views.EnrollmentCreateView.as_view(), name='enrollment-create'),

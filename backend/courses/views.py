@@ -38,24 +38,33 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from .serializers import ModuleWithLessonsSerializer
 
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from django.db.models import Prefetch
+from .models import Module, Lesson, Assignment
+from .serializers import ModuleWithLessonsAndAssignmentsSerializer
+
 class CourseModulesView(generics.ListAPIView):
-    serializer_class = ModuleWithLessonsSerializer
+    serializer_class = ModuleWithLessonsAndAssignmentsSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         course_id = self.kwargs['course_id']
 
+        # Предзагрузка уроков с домашками
+        lessons_qs = Lesson.objects.filter(
+            module__course_id=course_id
+        ).order_by('order_num').prefetch_related(
+            Prefetch('assignment_set', queryset=Assignment.objects.all())
+        )
+
+        # Предзагрузка модулей с уроками
         return Module.objects.filter(
-            course_id=course_id,
-            is_deleted=False
+            course_id=course_id
         ).prefetch_related(
-            Prefetch(
-                'lesson_set',
-                queryset=Lesson.objects.filter(
-                    is_deleted=False
-                ).order_by('order_num')
-            )
+            Prefetch('lesson_set', queryset=lessons_qs)
         ).order_by('order_num')
+
 
 from rest_framework import generics, permissions
 
@@ -125,16 +134,36 @@ class EnrollmentExportExcelView(APIView):
         wb.save(response)
         return response
 
+
 class ModuleLessonsView(generics.ListAPIView):
     serializer_class = LessonSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Lesson.objects.filter(
-            module_id=self.kwargs['module_id'],
-            is_deleted=False
-        ).order_by('order_num')
+        module_id = self.kwargs['module_id']
+        return Lesson.objects.filter(module_id=module_id, is_deleted=False).order_by('order_num')
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        lessons_data = []
+
+        for i, lesson in enumerate(queryset):
+            # проверка завершения предыдущего урока
+            if i == 0:
+                lesson.is_locked = False
+            else:
+                prev_lesson = queryset[i-1]
+                prev_completed = Submission.objects.filter(
+                    assignment__lesson=prev_lesson,
+                    user=request.user,
+                    is_graded=True
+                ).exists()
+                lesson.is_locked = not prev_completed
+            lesson.save(update_fields=['is_locked'])
+
+            lessons_data.append(LessonSerializer(lesson, context={'request': request}).data)
+
+        return Response(lessons_data)
 
 class SubmissionGradeView(generics.UpdateAPIView):
     queryset = Submission.objects.all()
@@ -561,23 +590,33 @@ class LessonDetailView(generics.RetrieveAPIView):
 
 
 # ===== ОТЗЫВЫ И ОЦЕНКИ =====
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
+from .models import Rating, Course
+from .serializers import RatingSerializer
+from django.shortcuts import get_object_or_404
+
 class RatingListView(generics.ListCreateAPIView):
     serializer_class = RatingSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        course_id = self.request.query_params.get('course_id')
+        # Берем course_id из URL kwargs
+        course_id = self.kwargs.get('course_id')
+        # Если курс не найден, вернем 404
+        get_object_or_404(Course, id=course_id)
         return Rating.objects.filter(course_id=course_id).select_related('user')
 
     def perform_create(self, serializer):
-        course = serializer.validated_data['course']
+        course_id = self.kwargs.get('course_id')
+        course = get_object_or_404(Course, id=course_id)
+
         # Проверяем, оставлял ли уже пользователь отзыв
-        if Rating.objects.filter(
-            user=self.request.user,
-            course=course
-        ).exists():
+        if Rating.objects.filter(user=self.request.user, course=course).exists():
             raise ValidationError("Вы уже оставляли отзыв для этого курса")
-        serializer.save(user=self.request.user)
+
+        serializer.save(user=self.request.user, course=course)
 
 # ===== ПОКУПКА / ЗАПИСЬ НА КУРС =====
 class EnrollmentCreateView(generics.CreateAPIView):
