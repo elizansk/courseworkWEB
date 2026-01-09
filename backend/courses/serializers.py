@@ -382,6 +382,40 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+from rest_framework import serializers
+from .models import Lesson, Assignment
+
+class LessonWithAssignmentsSerializer(serializers.ModelSerializer):
+    assignments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Lesson
+        fields = ['id', 'title', 'video_url', 'order_num', 'duration_min', 'is_locked', 'assignments']
+
+    def get_assignments(self, obj):
+        # Берем все домашки урока
+        return AssignmentSerializer(obj.assignment_set.all(), many=True).data
+from rest_framework import serializers
+from .models import Lesson, Assignment
+
+class LessonWithAssignmentsSerializer(serializers.ModelSerializer):
+    assignments = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Lesson
+        fields = ['id', 'title', 'video_url', 'order_num', 'duration_min', 'is_locked', 'assignments']
+
+    def get_assignments(self, obj):
+        # Берем все домашки урока
+        return AssignmentSerializer(obj.assignment_set.all(), many=True).data
+from .models import Module
+
+class ModuleWithLessonsAndAssignmentsSerializer(serializers.ModelSerializer):
+    lessons = LessonWithAssignmentsSerializer(source='lesson_set', many=True, read_only=True)
+
+    class Meta:
+        model = Module
+        fields = ['id', 'title', 'description', 'order_num', 'lessons']
 
 # ===== УРОКИ =====
 class LessonSerializer(serializers.ModelSerializer):
