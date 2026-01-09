@@ -178,6 +178,94 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 class BuyCourseSerializer(serializers.Serializer):
     course_id = serializers.IntegerField()
 
+class MyCourseSerializer(serializers.ModelSerializer):
+    progress = serializers.IntegerField(source='progress_pct')
+    title = serializers.CharField(source='course.title')
+    slug = serializers.CharField(source='course.slug')
+    id = serializers.IntegerField(source='course.id')
+
+    class Meta:
+        model = Enrollment
+        fields = ['id', 'title', 'slug', 'progress']
+
+from rest_framework import serializers
+from .models import Course
+
+class CourseAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = '__all__'
+        
+class LessonShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lesson
+        fields = [
+            'id',
+            'title',
+            'order_num',
+            'duration_min',
+            'is_locked',
+        ]
+
+
+class ModuleWithLessonsSerializer(serializers.ModelSerializer):
+    lessons = LessonShortSerializer(
+        source='lesson_set',
+        many=True,
+        read_only=True
+    )
+
+    class Meta:
+        model = Module
+        fields = [
+            'id',
+            'title',
+            'description',
+            'order_num',
+            'lessons',
+        ]
+    
+from rest_framework import serializers
+
+class SubmissionCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Submission
+        fields = ['assignment', 'content', 'file_url']
+
+    def validate(self, data):
+        user = self.context['request'].user
+        assignment = data['assignment']
+
+        # Проверяем, что задание обязательно
+        if not assignment.is_required:
+            raise serializers.ValidationError("Это задание не требует отправки решения")
+
+        # Проверка, что студент записан на курс
+        course = assignment.lesson.module.course
+        if not course.enrollment_set.filter(user=user, status='active').exists():
+            raise serializers.ValidationError("Вы не записаны на этот курс")
+
+        # Проверка, что ДЗ ещё не отправляли
+        if Submission.objects.filter(user=user, assignment=assignment).exists():
+            raise serializers.ValidationError("Вы уже отправили это задание")
+
+        # Проверка дедлайна
+        if assignment.due_date and assignment.due_date < timezone.now():
+            raise serializers.ValidationError("Срок сдачи задания истёк")
+
+        return data
+class SubmissionGradeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Submission
+        fields = ['score', 'feedback']
+
+    def validate_score(self, value):
+        assignment = self.instance.assignment
+        if value is not None and (value < 0 or value > assignment.max_score):
+            raise serializers.ValidationError(f"Оценка должна быть от 0 до {assignment.max_score}")
+        return value
+
+
 class CourseSerializer(serializers.ModelSerializer):
     instructor = UserSerializer(read_only=True)
     category = CategorySerializer(read_only=True)

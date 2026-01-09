@@ -14,6 +14,11 @@ from .models import (
     User, Role, Category, Course, Module, Lesson,
     Payment, Enrollment, Rating, Assignment, Submission, UserRole
 )
+from rest_framework.viewsets import ModelViewSet
+from .models import Course
+from .serializers import CourseAdminSerializer
+from .permissions import IsAdmin
+from rest_framework import serializers
 from .serializers import (
     UserSerializer, RoleSerializer, CategorySerializer, CourseSerializer,
     ModuleSerializer, LessonSerializer, PaymentSerializer, EnrollmentSerializer,
@@ -21,6 +26,257 @@ from .serializers import (
     RegisterSerializer
 )
 from .permissions import IsAdminOrReadOnly
+
+
+class CourseAdminViewSet(ModelViewSet):
+    queryset = Course.objects.all()
+    serializer_class = CourseAdminSerializer
+    permission_classes = [IsAdmin]
+# courses/views.py
+from django.db.models import Prefetch
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from .serializers import ModuleWithLessonsSerializer
+
+class CourseModulesView(generics.ListAPIView):
+    serializer_class = ModuleWithLessonsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        course_id = self.kwargs['course_id']
+
+        return Module.objects.filter(
+            course_id=course_id,
+            is_deleted=False
+        ).prefetch_related(
+            Prefetch(
+                'lesson_set',
+                queryset=Lesson.objects.filter(
+                    is_deleted=False
+                ).order_by('order_num')
+            )
+        ).order_by('order_num')
+
+from rest_framework import generics, permissions
+
+from .serializers import SubmissionCreateSerializer, SubmissionGradeSerializer
+
+class SubmissionCreateView(generics.CreateAPIView):
+    serializer_class = SubmissionCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+from .service.reward import recalc_course_progress
+
+
+# courses/views.py
+from rest_framework import generics, permissions
+from rest_framework.response import Response
+from .models import Module, Lesson, Submission, Assignment
+from .serializers import LessonSerializer
+
+# courses/views.py
+import datetime
+from django.http import HttpResponse
+from openpyxl import Workbook
+from .models import Enrollment
+
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAdminUser
+
+class EnrollmentExportExcelView(APIView):
+ # Только админы могут скачивать
+
+    def get(self, request):
+        # Создаём книгу Excel
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Enrollments"
+
+        # Заголовки
+        ws.append([
+            "ID записи", "Пользователь (email)", "Имя", "Фамилия",
+            "Курс", "Статус", "Дата записи", "Дата завершения", "Прогресс %"
+        ])
+
+        enrollments = Enrollment.objects.select_related('user', 'course').all()
+
+        for e in enrollments:
+            ws.append([
+                e.id,
+                e.user.email,
+                e.user.first_name,
+                e.user.last_name,
+                e.course.title,
+                e.status,
+                e.enrolled_at.strftime("%Y-%m-%d %H:%M:%S") if e.enrolled_at else "",
+                e.completed_at.strftime("%Y-%m-%d %H:%M:%S") if e.completed_at else "",
+                e.progress_pct
+            ])
+
+        # Генерация ответа
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        filename = f"enrollments_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+
+        wb.save(response)
+        return response
+
+
+class ModuleLessonsView(generics.ListAPIView):
+    serializer_class = LessonSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        module_id = self.kwargs['module_id']
+        return Lesson.objects.filter(module_id=module_id, is_deleted=False).order_by('order_num')
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        lessons_data = []
+
+        for i, lesson in enumerate(queryset):
+            # проверка завершения предыдущего урока
+            if i == 0:
+                lesson.is_locked = False
+            else:
+                prev_lesson = queryset[i-1]
+                prev_completed = Submission.objects.filter(
+                    assignment__lesson=prev_lesson,
+                    user=request.user,
+                    is_graded=True
+                ).exists()
+                lesson.is_locked = not prev_completed
+            lesson.save(update_fields=['is_locked'])
+
+            lessons_data.append(LessonSerializer(lesson, context={'request': request}).data)
+
+        return Response(lessons_data)
+
+class SubmissionGradeView(generics.UpdateAPIView):
+    queryset = Submission.objects.all()
+    serializer_class = SubmissionGradeSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Можно добавить проверку преподавателя
+
+    def perform_update(self, serializer):
+        serializer.save(is_graded=True)
+
+        # Пересчёт прогресса после проверки
+        user = serializer.instance.user
+        course = serializer.instance.assignment.lesson.module.course
+        recalc_course_progress(user, course)
+
+
+from rest_framework import generics, permissions
+from .models import Submission
+from .serializers import SubmissionCreateSerializer, SubmissionGradeSerializer
+
+# --- Студент отправляет ДЗ ---
+class SubmissionCreateView(generics.CreateAPIView):
+    queryset = Submission.objects.all()
+    serializer_class = SubmissionCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+# --- Преподаватель ставит оценку ---
+from django.utils import timezone
+from .models import UserLessonProgress, Lesson
+from .permissions import IsTeacher
+
+class SubmissionGradeView(generics.UpdateAPIView):
+    queryset = Submission.objects.all()
+    serializer_class = SubmissionGradeSerializer
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+
+    def perform_update(self, serializer):
+        submission = serializer.save(is_graded=True)
+
+        # Получаем пользователя и урок
+        user = submission.user
+        lesson = submission.assignment.lesson
+
+        # Отмечаем текущий урок как завершённый
+        UserLessonProgress.objects.update_or_create(
+            user=user,
+            lesson=lesson,
+            defaults={'is_completed': True, 'completed_at': timezone.now()}
+        )
+
+        # Открываем следующий урок
+        next_lesson = Lesson.objects.filter(
+            module=lesson.module,
+            order_num__gt=lesson.order_num,
+            is_deleted=False
+        ).order_by('order_num').first()
+
+        if next_lesson:
+            UserLessonProgress.objects.get_or_create(
+                user=user,
+                lesson=next_lesson,
+                defaults={'is_completed': False}
+            )
+
+
+# --- Список отправленных ДЗ (для преподавателя) ---
+class SubmissionListView(generics.ListAPIView):
+    queryset = Submission.objects.all()
+    serializer_class = SubmissionGradeSerializer  # или отдельный сериализатор с пользователем и заданием
+    permission_classes = [permissions.IsAuthenticated]  # Можно добавить IsTeacher
+
+# --- Детали конкретного ДЗ ---
+class SubmissionDetailView(generics.RetrieveAPIView):
+    queryset = Submission.objects.all()
+    serializer_class = SubmissionGradeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class ModuleDetailView(generics.RetrieveAPIView):
+    queryset = Module.objects.filter(is_deleted=False)
+    serializer_class = ModuleSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        user = self.request.user
+        # Предзагрузка уроков и проверенных домашних заданий
+        lessons_prefetch = Prefetch(
+            'lesson_set',
+            queryset=Lesson.objects.filter(is_deleted=False).order_by('order_num')
+        )
+        return Module.objects.prefetch_related(lessons_prefetch)
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Авто-разблокировка следующего урока
+        lessons = instance.lesson_set.filter(is_deleted=False).order_by('order_num')
+        for i, lesson in enumerate(lessons):
+            # Разблокируем первый урок или предыдущий выполнен
+            if i == 0:
+                lesson.is_locked = False
+                lesson.save(update_fields=['is_locked'])
+            else:
+                prev_lesson = lessons[i-1]
+                # проверяем, сдано ли ДЗ предыдущего урока
+                prev_completed = Submission.objects.filter(
+                    assignment__lesson=prev_lesson,
+                    user=request.user,
+                    is_graded=True
+                ).exists()
+                if prev_completed:
+                    lesson.is_locked = False
+                    lesson.save(update_fields=['is_locked'])
+                else:
+                    lesson.is_locked = True
+                    lesson.save(update_fields=['is_locked'])
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 # ===== АУТЕНТИФИКАЦИЯ =====
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -93,6 +349,19 @@ def add_course_after_payment(request, course_id):
             {'detail': f'Пользователь уже записан на курс "{course.title}"'},
             status=status.HTTP_200_OK
         )
+from .serializers import MyCourseSerializer
+
+class MyCoursesView(generics.ListAPIView):
+    serializer_class = MyCourseSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Enrollment.objects.filter(
+            user=self.request.user,
+            status='active'
+        ).select_related('course')
+
+
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import CustomTokenObtainPairSerializer
@@ -118,7 +387,7 @@ class UserEnrollmentsView(generics.ListAPIView):
             status='active'
         ).select_related('course')
     
-from .services.reviews import can_leave_review
+from .service.reviews import can_leave_review
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -223,6 +492,8 @@ class CourseDetailView(generics.RetrieveAPIView):
         ).annotate(
             average_rating=Avg('ratings__rating')
         )
+
+
 
 # ===== СТРАНИЦА ОБУЧЕНИЯ (ВНУТРИ КУРСА) =====
 class CourseLearningView(generics.RetrieveAPIView):

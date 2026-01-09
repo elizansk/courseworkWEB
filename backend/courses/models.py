@@ -44,7 +44,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -195,6 +194,17 @@ class Assignment(models.Model):
 
     class Meta:
         db_table = 'assignments'
+
+class UserLessonProgress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    is_completed = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'user_lesson_progress'
+        unique_together = ('user', 'lesson')
+
 
 class Submission(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, db_column='assignment_id')

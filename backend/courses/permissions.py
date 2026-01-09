@@ -20,3 +20,17 @@ class IsAdminOrReadOnly(BasePermission):
             return UserRole.objects.filter(user_id=user_id, role_id=1).exists()
         except:
             return False
+        
+from rest_framework.permissions import BasePermission
+
+class IsTeacher(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_staff  # или свой флаг is_teacher
+
+class IsAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user and
+            request.user.is_authenticated and
+            request.user.is_staff
+        )

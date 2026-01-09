@@ -1,6 +1,8 @@
 # courses/admin.py
 from django.contrib import admin
 from .models import User, Role, UserRole, Category, Course, Module, Lesson, Payment, Enrollment, Rating, Assignment, Submission, UserCourse
+from django.contrib import admin
+
 
 # --- User ---
 @admin.register(User)
