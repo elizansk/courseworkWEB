@@ -34,11 +34,10 @@ const CourseDetailPage: React.FC = () => {
     if (error) return <div>Ошибка: {error}</div>;
     if (!course) return <div>Курс не найден</div>;
 
-    // 🔹 Новая функция покупки
     const handleBuy = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        e.stopPropagation(); // чтобы клик не всплывал
-        navigate("/payment", { state: { course } }); // переходим на страницу оплаты и передаем курс
+        e.stopPropagation();
+        navigate(`/payment/${course.id}`, { state: { course } });
     };
 
     return (
