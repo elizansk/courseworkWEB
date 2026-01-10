@@ -452,7 +452,7 @@ class LessonWithAssignmentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lesson
-        fields = ['id', 'title', 'order_num', 'duration_min', 'is_locked', 'assignments']
+        fields = ['id', 'title', 'order_num', 'video_url','duration_min', 'is_locked', 'assignments']
 
 class ModuleWithLessonsAndAssignmentsSerializer(serializers.ModelSerializer):
     lessons = LessonWithAssignmentsSerializer(many=True, read_only=True, source='lesson_set')

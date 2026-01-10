@@ -54,21 +54,70 @@ class CourseModulesView(generics.ListAPIView):
     serializer_class = ModuleWithLessonsAndAssignmentsSerializer
     permission_classes = [IsAuthenticated]
 
+    from django.db.models import Prefetch
+from rest_framework.response import Response
+from rest_framework import generics, permissions
+from .models import Module, Lesson, Assignment, Submission
+from .serializers import ModuleWithLessonsAndAssignmentsSerializer
+
+from rest_framework.response import Response
+from rest_framework import generics
+from django.db.models import Prefetch
+
+from rest_framework.response import Response
+from rest_framework import generics
+from django.db.models import Prefetch
+
+class CourseModulesView(generics.ListAPIView):
+    serializer_class = ModuleWithLessonsAndAssignmentsSerializer
+    permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
         course_id = self.kwargs['course_id']
         user = self.request.user
 
         submissions_qs = Submission.objects.filter(user=user)
+
         assignments_qs = Assignment.objects.prefetch_related(
             Prefetch('submission_set', queryset=submissions_qs)
         )
-        lessons_qs = Lesson.objects.filter(module__course_id=course_id).order_by('order_num').prefetch_related(
+
+        lessons_qs = Lesson.objects.filter(
+            module__course_id=course_id
+        ).order_by('order_num').prefetch_related(
             Prefetch('assignment_set', queryset=assignments_qs)
         )
 
-        return Module.objects.filter(course_id=course_id).prefetch_related(
+        return Module.objects.filter(
+            course_id=course_id
+        ).prefetch_related(
             Prefetch('lesson_set', queryset=lessons_qs)
         ).order_by('order_num')
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        total_assignments = 0
+        completed_assignments = 0
+
+        for module in queryset:
+            for lesson in module.lesson_set.all():
+                for assignment in lesson.assignment_set.all():
+                    total_assignments += 1
+                    if assignment.submission_set.exists():
+                        completed_assignments += 1
+
+        progress_pct = 0
+        if total_assignments > 0:
+            progress_pct = round((completed_assignments / total_assignments) * 100)
+
+        return Response({
+            'progress_pct': progress_pct,
+            'total_assignments': total_assignments,
+            'completed_assignments': completed_assignments,
+            'modules': serializer.data
+        })
 
 
 
