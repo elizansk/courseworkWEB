@@ -11,6 +11,7 @@ import LessonsPage from "./pages/Lessons/LessonsPage.tsx";
 
 import { MainLayout } from "./layout/MainLayout.tsx";
 import { AuthLayout } from "./layout/AuthLayout";
+import TeacherSubmissionsPage from "./pages/TeacherSubmissions/TeacherSubmissionsPage.tsx";
 
 
 
@@ -30,7 +31,7 @@ const App = () => (
                     <Route path="/teacher" element={<ProfilePage userRole="teacher" />} />
                     <Route path="/admin" element={<ProfilePage userRole="admin" />} />
                     <Route path="/payment/:courseId" element={<PayPage />} />
-
+                    <Route path="/teacher/submissions" element={<TeacherSubmissionsPage />} />
                 </Route>
             </Route>
 

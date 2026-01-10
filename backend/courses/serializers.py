@@ -229,6 +229,20 @@ class ModuleWithLessonsSerializer(serializers.ModelSerializer):
     
 from rest_framework import serializers
 
+class SubmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Submission
+        fields = (
+            'id',
+            'content',
+            'file_url',
+            'submitted_at',
+            'is_graded',
+            'score',
+            'feedback',
+        )
+
+
 class SubmissionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission
@@ -342,18 +356,7 @@ class AssignmentSerializer(serializers.ModelSerializer):
         model = Assignment
         fields = ['id', 'title', 'description', 'due_date', 'max_score']
 
-# ===== РЕШЕНИЯ =====
-class SubmissionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Submission
-        fields = ['id', 'assignment', 'content', 'file_url', 'score', 'feedback', 'is_graded']
-        read_only_fields = ['score', 'feedback', 'is_graded']
-    
-    def validate(self, data):
-        assignment = data.get('assignment')
-        if assignment and not assignment.is_required:
-            raise serializers.ValidationError("Это задание не требует отправки решения")
-        return data
+
 
 # ===== ПЛАТЕЖИ =====
 class PaymentSerializer(serializers.ModelSerializer):
@@ -435,10 +438,6 @@ class LessonSerializer(serializers.ModelSerializer):
 from rest_framework import serializers
 from .models import Module, Lesson, Assignment, Submission
 
-class SubmissionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Submission
-        fields = ['id', 'user', 'content', 'file_url', 'score', 'feedback', 'is_graded']
 
 class AssignmentWithSubmissionsSerializer(serializers.ModelSerializer):
     submissions = SubmissionSerializer(many=True, read_only=True, source='submission_set')
@@ -460,3 +459,64 @@ class ModuleWithLessonsAndAssignmentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Module
         fields = ['id', 'title', 'description', 'order_num', 'lessons']
+
+class LessonSerializer(serializers.ModelSerializer):
+    assignments = AssignmentSerializer(
+        many=True,
+        source='assignment_set'
+    )
+
+    class Meta:
+        model = Lesson
+        fields = (
+            'id',
+            'title',
+            'video_url',
+            'order_num',
+            'duration_min',
+            'is_locked',
+            'assignments',
+        )
+
+
+class ModuleWithLessonsAndAssignmentsSerializer(serializers.ModelSerializer):
+    lessons = LessonSerializer(
+        many=True,
+        source='lesson_set'
+    )
+
+    class Meta:
+        model = Module
+        fields = (
+            'id',
+            'title',
+            'description',
+            'order_num',
+            'lessons',
+        )
+# serializers.py
+class SubmissionForTeacherSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    assignment_title = serializers.CharField(source='assignment.title', read_only=True)
+    lesson_id = serializers.IntegerField(source='assignment.lesson.id', read_only=True)
+    lesson_title = serializers.CharField(source='assignment.lesson.title', read_only=True)
+    course_id = serializers.IntegerField(source='assignment.lesson.module.course.id', read_only=True)
+    course_title = serializers.CharField(source='assignment.lesson.module.course.title', read_only=True)
+
+    class Meta:
+        model = Submission
+        fields = (
+            'id',
+            'user',
+            'course_id',
+            'course_title',
+            'lesson_id',
+            'lesson_title',
+            'assignment_title',
+            'content',
+            'file_url',
+            'submitted_at',
+            'is_graded',
+            'score',
+            'feedback',
+        )

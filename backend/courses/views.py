@@ -287,16 +287,44 @@ class SubmissionGradeView(generics.UpdateAPIView):
 
 
 # --- Список отправленных ДЗ (для преподавателя) ---
-class SubmissionListView(generics.ListAPIView):
-    queryset = Submission.objects.all()
-    serializer_class = SubmissionGradeSerializer  # или отдельный сериализатор с пользователем и заданием
-    permission_classes = [permissions.IsAuthenticated]  # Можно добавить IsTeacher
+from .serializers import SubmissionForTeacherSerializer
 
-# --- Детали конкретного ДЗ ---
+class SubmissionListView(generics.ListAPIView):
+    serializer_class = SubmissionForTeacherSerializer
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+
+    def get_queryset(self):
+        qs = Submission.objects.select_related(
+            'user',
+            'assignment',
+            'assignment__lesson',
+            'assignment__lesson__module',
+            'assignment__lesson__module__course',
+        )
+
+        course_id = self.request.query_params.get('course_id')
+        lesson_id = self.request.query_params.get('lesson_id')
+
+        if course_id:
+            qs = qs.filter(assignment__lesson__module__course_id=course_id)
+
+        if lesson_id:
+            qs = qs.filter(assignment__lesson_id=lesson_id)
+
+        return qs.order_by('-submitted_at')
+
+
 class SubmissionDetailView(generics.RetrieveAPIView):
-    queryset = Submission.objects.all()
-    serializer_class = SubmissionGradeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    queryset = Submission.objects.select_related(
+        'user',
+        'assignment',
+        'assignment__lesson',
+        'assignment__lesson__module',
+        'assignment__lesson__module__course',
+    )
+    serializer_class = SubmissionForTeacherSerializer
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+
 
 
 class ModuleDetailView(generics.RetrieveAPIView):
