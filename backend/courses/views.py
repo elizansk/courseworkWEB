@@ -44,26 +44,32 @@ from django.db.models import Prefetch
 from .models import Module, Lesson, Assignment
 from .serializers import ModuleWithLessonsAndAssignmentsSerializer
 
+from django.db.models import Prefetch
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from .models import Module, Lesson, Assignment, Submission
+from .serializers import ModuleWithLessonsAndAssignmentsSerializer
+
 class CourseModulesView(generics.ListAPIView):
     serializer_class = ModuleWithLessonsAndAssignmentsSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         course_id = self.kwargs['course_id']
+        user = self.request.user
 
-        # Предзагрузка уроков с домашками
-        lessons_qs = Lesson.objects.filter(
-            module__course_id=course_id
-        ).order_by('order_num').prefetch_related(
-            Prefetch('assignment_set', queryset=Assignment.objects.all())
+        submissions_qs = Submission.objects.filter(user=user)
+        assignments_qs = Assignment.objects.prefetch_related(
+            Prefetch('submission_set', queryset=submissions_qs)
+        )
+        lessons_qs = Lesson.objects.filter(module__course_id=course_id).order_by('order_num').prefetch_related(
+            Prefetch('assignment_set', queryset=assignments_qs)
         )
 
-        # Предзагрузка модулей с уроками
-        return Module.objects.filter(
-            course_id=course_id
-        ).prefetch_related(
+        return Module.objects.filter(course_id=course_id).prefetch_related(
             Prefetch('lesson_set', queryset=lessons_qs)
         ).order_by('order_num')
+
 
 
 from rest_framework import generics, permissions
