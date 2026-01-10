@@ -44,7 +44,8 @@ const StudentCoursePanel: React.FC = () => {
     }, []);
 
     const goToLessons = (slug: string) => {
-        navigate(`/course/${slug}/lessons`);
+        console.log(`profile/course/${slug}/lessons`)
+        navigate(`/profile/course/${slug}/lessons`);
     };
 
     if (loading) {
