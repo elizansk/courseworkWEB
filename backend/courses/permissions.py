@@ -23,9 +23,25 @@ class IsAdminOrReadOnly(BasePermission):
         
 from rest_framework.permissions import BasePermission
 
+# courses/permissions.py
+from rest_framework.permissions import BasePermission
+from .models import UserRole
+
 class IsTeacher(BasePermission):
+    """
+    Доступ только для пользователей с ролью instructor (id=2)
+    """
+
     def has_permission(self, request, view):
-        return request.user.is_staff  # или свой флаг is_teacher
+        user = request.user
+
+        if not user or not user.is_authenticated:
+            return False
+
+        return UserRole.objects.filter(
+            user=user,
+            role_id=2  # instructor
+        ).exists()
 
 class IsAdmin(BasePermission):
     def has_permission(self, request, view):
