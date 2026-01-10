@@ -350,11 +350,37 @@ class RatingSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Оценка должна быть от 1 до 5")
         return value
 
-# ===== ДОМАШКИ =====
 class AssignmentSerializer(serializers.ModelSerializer):
+    is_completed = serializers.SerializerMethodField()
+    submission = serializers.SerializerMethodField()
+
     class Meta:
         model = Assignment
-        fields = ['id', 'title', 'description', 'due_date', 'max_score']
+        fields = (
+            'id',
+            'title',
+            'description',
+            'due_date',
+            'max_score',
+            'is_completed',
+            'submission',
+        )
+
+    def get_is_completed(self, obj):
+        return obj.submission_set.exists()
+
+    def get_submission(self, obj):
+        submission = obj.submission_set.first()
+        if not submission:
+            return None
+        return {
+            'id': submission.id,
+            'submitted_at': submission.submitted_at,
+            'is_graded': submission.is_graded,
+            'score': submission.score,
+            'feedback': submission.feedback,
+        }
+
 
 
 
@@ -415,24 +441,23 @@ class ModuleWithLessonsAndAssignmentsSerializer(serializers.ModelSerializer):
         model = Module
         fields = ['id', 'title', 'description', 'order_num', 'lessons']
 
-# ===== УРОКИ =====
 class LessonSerializer(serializers.ModelSerializer):
     assignments = AssignmentSerializer(
         many=True,
-        read_only=True,
         source='assignment_set'
     )
 
     class Meta:
         model = Lesson
-        fields = [
+        fields = (
             'id',
             'title',
+            'video_url',
             'order_num',
             'duration_min',
             'is_locked',
             'assignments',
-        ]
+        )
 
 # serializers.py
 from rest_framework import serializers
@@ -454,11 +479,21 @@ class LessonWithAssignmentsSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'order_num', 'video_url','duration_min', 'is_locked', 'assignments']
 
 class ModuleWithLessonsAndAssignmentsSerializer(serializers.ModelSerializer):
-    lessons = LessonWithAssignmentsSerializer(many=True, read_only=True, source='lesson_set')
+    lessons = LessonSerializer(
+        many=True,
+        source='lesson_set'
+    )
 
     class Meta:
         model = Module
-        fields = ['id', 'title', 'description', 'order_num', 'lessons']
+        fields = (
+            'id',
+            'title',
+            'description',
+            'order_num',
+            'lessons',
+        )
+
 
 class LessonSerializer(serializers.ModelSerializer):
     assignments = AssignmentSerializer(

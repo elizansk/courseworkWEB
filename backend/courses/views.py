@@ -335,40 +335,30 @@ class ModuleDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        # Предзагрузка уроков и проверенных домашних заданий
-        lessons_prefetch = Prefetch(
-            'lesson_set',
-            queryset=Lesson.objects.filter(is_deleted=False).order_by('order_num')
+
+        submissions_qs = Submission.objects.filter(user=user)
+
+        assignments_qs = Assignment.objects.prefetch_related(
+            Prefetch(
+                'submission_set',
+                queryset=submissions_qs
+            )
         )
-        return Module.objects.prefetch_related(lessons_prefetch)
-    
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
 
-        # Авто-разблокировка следующего урока
-        lessons = instance.lesson_set.filter(is_deleted=False).order_by('order_num')
-        for i, lesson in enumerate(lessons):
-            # Разблокируем первый урок или предыдущий выполнен
-            if i == 0:
-                lesson.is_locked = False
-                lesson.save(update_fields=['is_locked'])
-            else:
-                prev_lesson = lessons[i-1]
-                # проверяем, сдано ли ДЗ предыдущего урока
-                prev_completed = Submission.objects.filter(
-                    assignment__lesson=prev_lesson,
-                    user=request.user,
-                    is_graded=True
-                ).exists()
-                if prev_completed:
-                    lesson.is_locked = False
-                    lesson.save(update_fields=['is_locked'])
-                else:
-                    lesson.is_locked = True
-                    lesson.save(update_fields=['is_locked'])
+        lessons_qs = Lesson.objects.filter(
+            is_deleted=False
+        ).order_by('order_num').prefetch_related(
+            Prefetch(
+                'assignment_set',
+                queryset=assignments_qs
+            )
+        )
 
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        return Module.objects.filter(
+            is_deleted=False
+        ).prefetch_related(
+            Prefetch('lesson_set', queryset=lessons_qs)
+        )
 
 # ===== АУТЕНТИФИКАЦИЯ =====
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
