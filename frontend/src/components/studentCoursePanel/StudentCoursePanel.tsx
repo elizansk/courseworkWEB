@@ -43,9 +43,9 @@ const StudentCoursePanel: React.FC = () => {
         fetchEnrollments();
     }, []);
 
-    const goToLessons = (slug: string) => {
-        console.log(`profile/course/${slug}/lessons`)
-        navigate(`/profile/course/${slug}/lessons`);
+    const goToLessons = (CourseId: string) => {
+        console.log(`profile/course/${CourseId}/lessons`)
+        navigate(`/profile/course/${CourseId}/lessons`);
     };
 
     if (loading) {
@@ -98,7 +98,7 @@ const StudentCoursePanel: React.FC = () => {
 
                                     <button
                                         className="continue-btn"
-                                        onClick={() => goToLessons(course.slug)}
+                                        onClick={() => goToLessons(course.id.toString())}
                                     >
                                         Продолжить
                                     </button>

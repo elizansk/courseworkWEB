@@ -1,0 +1,55 @@
+@import "../../styles/variables.scss";
+
+.homework {
+  margin-top: 1rem;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 1rem;
+  border-radius: 12px;
+
+  h4 {
+    margin-bottom: 0.3rem;
+    color: $color-accent;
+  }
+}
+
+.homework-status {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.homework-form {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  textarea,
+  input {
+    border-radius: 8px;
+    padding: 0.5rem;
+    border: none;
+    resize: vertical;
+  }
+
+  button {
+    align-self: flex-start;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    background: $color-indigo;
+    color: white;
+    border: none;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.feedback {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}

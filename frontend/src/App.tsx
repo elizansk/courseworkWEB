@@ -25,7 +25,7 @@ const App = () => (
                     <Route path="/pride" element={<PridePage />} />
                     <Route path="/courses" element={<CoursesPage />} />
                     <Route path="/course/:slug" element={<CourseDetailPage />} />
-                    <Route path="/profile/course/:slug/lessons" element={<LessonsPage />} />
+                    <Route path="/profile/course/:courseId/lessons" element={<LessonsPage />} />
                     <Route path="/profile" element={<ProfilePage userRole="student" />} />
                     <Route path="/teacher" element={<ProfilePage userRole="teacher" />} />
                     <Route path="/admin" element={<ProfilePage userRole="admin" />} />

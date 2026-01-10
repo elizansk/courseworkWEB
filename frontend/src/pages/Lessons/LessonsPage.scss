@@ -5,102 +5,53 @@
   color: $color-text-light;
 
   h1 {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 }
 
-.course-select {
+.course-progress {
+  margin-bottom: 1.5rem;
+  opacity: 0.85;
+}
+
+.module-tabs {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
   margin-bottom: 2rem;
 
   button {
-    background: $color-card-bg;
-    border: 1px solid rgba(255,255,255,0.2);
-    color: $color-text-light;
-    padding: 0.6rem 1.2rem;
+    padding: 0.55rem 1rem;
     border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: $color-text-light;
     cursor: pointer;
     transition: 0.2s;
 
     &.active {
       background: $color-indigo;
-    }
-
-    &:hover {
-      background: rgba(255,255,255,0.1);
+      border-color: transparent;
     }
   }
-}
-
-.lessons-list {
-  display: grid;
-  gap: 2rem;
 }
 
 .lesson-card {
   background: $color-card-bg;
   border-radius: 18px;
   padding: 1.5rem;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.1);
+  margin-bottom: 1.5rem;
+}
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; // 16:9
+  margin-bottom: 1rem;
 
-  h2 {
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .video-wrapper {
-    position: relative;
-    padding-bottom: 56.25%; // 16:9
-    margin-bottom: 1rem;
-
-    iframe {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 12px;
-    }
-  }
-
-  .description {
-    opacity: 0.9;
-    margin-bottom: 1rem;
-  }
-
-  .homework {
-    margin-bottom: 1rem;
-    background: rgba(0,0,0,0.2);
-    padding: 1rem;
-    border-radius: 12px;
-
-    h3 {
-      margin-bottom: 0.5rem;
-      color: $color-accent;
-    }
-  }
-
-  .complete-btn {
-    margin-top: 1rem;
-    padding: 0.6rem 1.2rem;
+  iframe {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     border: none;
     border-radius: 12px;
-    cursor: pointer;
-    font-weight: 500;
-    background: $color-card-bg;
-    color: $color-text-light;
-    transition: 0.2s;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    &.done {
-      background: $color-accent;
-      color: #000;
-    }
   }
 }
