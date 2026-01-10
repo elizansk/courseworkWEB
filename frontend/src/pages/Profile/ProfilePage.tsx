@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./profile.scss";
 import StudentCoursePanel from "../../components/studentCoursePanel/StudentCoursePanel";
 import { useAuth } from "../../context/AuthContext";
@@ -12,6 +13,7 @@ interface ProfilePageProps {
 const ProfilePage: React.FC<ProfilePageProps> = ({ userRole }) => {
     const [activeTab, setActiveTab] = useState<string>("profile");
     const { user } = useAuth();
+    const navigate = useNavigate(); // <- навигация
 
     const userInfo = {
         name: `${user?.first_name} ${user?.last_name}`,
@@ -44,14 +46,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userRole }) => {
                 return <StudentCoursePanel />;
 
             case "manage-courses":
-                if (userRole === "teacher" || userRole === "admin") {
-                    return (
-                        <div className="tab-content fade">
-                            <h2>Управление курсами</h2>
-                            <p>Добавляйте, редактируйте и отслеживайте курсы.</p>
-                        </div>
-                    );
-                }
                 return null;
 
             case "manage-users":
@@ -87,6 +81,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userRole }) => {
         }
     };
 
+    const handleTabClick = (tab: string) => {
+        if (tab === "manage-courses" && (userRole === "teacher" || userRole === "admin")) {
+            // редирект на страницу проверки ДЗ
+            navigate("/teacher/submissions");
+            return;
+        }
+        setActiveTab(tab);
+    };
+
     return (
         <div className="profile-page">
             <aside className="profile-sidebar">
@@ -94,14 +97,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userRole }) => {
                 <ul>
                     <li
                         className={activeTab === "profile" ? "active" : ""}
-                        onClick={() => setActiveTab("profile")}
+                        onClick={() => handleTabClick("profile")}
                     >
                         Профиль
                     </li>
 
                     <li
                         className={activeTab === "my-courses" ? "active" : ""}
-                        onClick={() => setActiveTab("my-courses")}
+                        onClick={() => handleTabClick("my-courses")}
                     >
                         Мои курсы
                     </li>
@@ -109,16 +112,16 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userRole }) => {
                     {(userRole === "teacher" || userRole === "admin") && (
                         <li
                             className={activeTab === "manage-courses" ? "active" : ""}
-                            onClick={() => setActiveTab("manage-courses")}
+                            onClick={() => handleTabClick("manage-courses")}
                         >
-                            Управление курсами
+                            Управление домашними заданиями
                         </li>
                     )}
 
                     {userRole === "admin" && (
                         <li
                             className={activeTab === "manage-users" ? "active" : ""}
-                            onClick={() => setActiveTab("manage-users")}
+                            onClick={() => handleTabClick("manage-users")}
                         >
                             Управление пользователями
                         </li>

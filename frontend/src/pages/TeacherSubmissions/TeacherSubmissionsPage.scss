@@ -1,0 +1,19 @@
+.teacher-submissions {
+  min-height: 100vh;
+  padding: 2rem;
+  background: linear-gradient(135deg, #0a0b2e, #4338ca, #7e22ce);
+  color: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #f3f4f6;
+  }
+
+  .submissions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
