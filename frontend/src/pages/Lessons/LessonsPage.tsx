@@ -25,6 +25,7 @@ const LessonsPage: React.FC = () => {
                 );
 
                 const data = await res.json();
+                console.log(data);
                 setCourse(data);
                 setActiveModuleId(data.modules[0]?.id ?? null);
             } catch (e) {
