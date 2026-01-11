@@ -725,6 +725,24 @@ class EnrollmentCreateView(generics.CreateAPIView):
         )
         
         return enrollment
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsTeacher
+from .models import Course
+from .serializers import CourseCreateSerializer
+
+class InstructorCourseCreateView(generics.CreateAPIView):
+    serializer_class = CourseCreateSerializer
+    permission_classes = [IsAuthenticated, IsTeacher]
+
+# courses/views.py
+from rest_framework import generics
+from .models import Category
+from .serializers import CategoryDictSerializer
+
+class CategoryDictView(generics.ListAPIView):
+    queryset = Category.objects.all().order_by('name')
+    serializer_class = CategoryDictSerializer
 
 # ===== ADMIN-ЭНДПОИНТЫ =====
 class AdminUserViewSet(viewsets.ModelViewSet):

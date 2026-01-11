@@ -102,6 +102,30 @@ class CategorySerializer(serializers.ModelSerializer):
         if assignments.exists():
             return AssignmentSerializer(assignments, many=True, context=self.context).data
         return []
+    
+class CategoryDictSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
+
+class CourseCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = [
+            'title',
+            'slug',
+            'description',
+            'short_desc',
+            'category',
+            'price',
+            'thumbnail_url',
+            'duration_hours',
+        ]
+
+    def create(self, validated_data):
+        request = self.context['request']
+        validated_data['instructor'] = request.user
+        return super().create(validated_data)
 
 # ===== МОДУЛИ =====
 class ModuleSerializer(serializers.ModelSerializer):

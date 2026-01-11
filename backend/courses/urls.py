@@ -44,9 +44,11 @@ urlpatterns = [
     # ===== МОИ КУРСЫ ======
     path('my-courses/', views.MyCoursesView.as_view()),
 
+    path('categories/dict/', views.CategoryDictView.as_view()),
     # ===== СТРАНИЦА УРОКА =====
     path('lessons/<int:pk>/', views.LessonDetailView.as_view(), name='lesson-detail'),
     # Студент отправляет домашнее задание
+    path('instructor/courses/', views.InstructorCourseCreateView.as_view()),
 
     path('submissions/', views.SubmissionCreateView.as_view(), name='submission-create'),
     
@@ -66,7 +68,7 @@ urlpatterns = [
 
     # ===== ОТЗЫВЫ И ОЦЕНКИ =====
     path('courses/<int:course_id>/ratings/', views.RatingListView.as_view(), name='course-ratings'),
-    
+
     path('admin/export-full-db/', views.EnrollmentExportExcelView.as_view(), name='export-full-db'),
     # ===== ПОКУПКА / ЗАПИСЬ НА КУРС =====
     path('enrollments/', views.EnrollmentCreateView.as_view(), name='enrollment-create'),
