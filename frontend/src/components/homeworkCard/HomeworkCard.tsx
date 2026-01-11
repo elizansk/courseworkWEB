@@ -9,8 +9,10 @@ type Props = {
 
 const HomeworkCard: React.FC<Props> = ({ assignment, onSubmitted }) => {
     const API_URL = import.meta.env.VITE_API_URL;
-    const submission = assignment.submissions[0];
-
+    const submission = assignment.submissions && assignment.submissions.length > 0
+        ? assignment.submissions[0]
+        : null;
+    console.log(submission);
     const [content, setContent] = useState("");
     const [fileUrl, setFileUrl] = useState("");
     const [loading, setLoading] = useState(false);
