@@ -21,8 +21,7 @@ from .permissions import IsAdmin
 from rest_framework import serializers
 from .serializers import (
     UserSerializer, RoleSerializer, CategorySerializer, CourseSerializer,
-    ModuleSerializer, LessonSerializer, PaymentSerializer, EnrollmentSerializer,
-    RatingSerializer, AssignmentSerializer, SubmissionSerializer,
+    ModuleSerializer, LessonSerializer, PaymentSerializer, EnrollmentSerializer, AssignmentSerializer, SubmissionSerializer,
     RegisterSerializer
 )
 from .permissions import IsAdminOrReadOnly
@@ -667,29 +666,38 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from .models import Rating, Course
-from .serializers import RatingSerializer
 from django.shortcuts import get_object_or_404
+from .serializers import RatingCreateSerializer, RatingListSerializer
 
 class RatingListView(generics.ListCreateAPIView):
-    serializer_class = RatingSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Берем course_id из URL kwargs
-        course_id = self.kwargs.get('course_id')
-        # Если курс не найден, вернем 404
+        course_id = self.kwargs['course_id']
         get_object_or_404(Course, id=course_id)
-        return Rating.objects.filter(course_id=course_id).select_related('user')
+        return Rating.objects.filter(
+            course_id=course_id
+        ).select_related('user').order_by('-created_at')
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return RatingCreateSerializer
+        return RatingListSerializer
 
     def perform_create(self, serializer):
-        course_id = self.kwargs.get('course_id')
-        course = get_object_or_404(Course, id=course_id)
+        course = get_object_or_404(Course, id=self.kwargs['course_id'])
 
-        # Проверяем, оставлял ли уже пользователь отзыв
-        if Rating.objects.filter(user=self.request.user, course=course).exists():
+        if Rating.objects.filter(
+            user=self.request.user,
+            course=course
+        ).exists():
             raise ValidationError("Вы уже оставляли отзыв для этого курса")
 
-        serializer.save(user=self.request.user, course=course)
+        serializer.save(
+            user=self.request.user,
+            course=course
+        )
+
 
 # ===== ПОКУПКА / ЗАПИСЬ НА КУРС =====
 class EnrollmentCreateView(generics.CreateAPIView):
@@ -725,15 +733,7 @@ class EnrollmentCreateView(generics.CreateAPIView):
         )
         
         return enrollment
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
-from .permissions import IsTeacher
-from .models import Course
-from .serializers import CourseCreateSerializer
 
-class InstructorCourseCreateView(generics.CreateAPIView):
-    serializer_class = CourseCreateSerializer
-    permission_classes = [IsAuthenticated, IsTeacher]
 
 # courses/views.py
 from rest_framework import generics
@@ -743,6 +743,52 @@ from .serializers import CategoryDictSerializer
 class CategoryDictView(generics.ListAPIView):
     queryset = Category.objects.all().order_by('name')
     serializer_class = CategoryDictSerializer
+
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsTeacher
+from .serializers import CourseFullCreateSerializer
+from .serializers import InstructorCourseSerializer
+
+class InstructorCourseCreateView(generics.CreateAPIView):
+    serializer_class = CourseFullCreateSerializer
+    permission_classes = [IsAuthenticated, IsTeacher]
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from django.db.models import Prefetch
+
+class InstructorMyCoursesView(generics.ListAPIView):
+    serializer_class = InstructorCourseSerializer
+    permission_classes = [IsAuthenticated, IsTeacher]
+
+    def get_queryset(self):
+        user = self.request.user  # <-- текущий залогиненный
+
+        return Course.objects.filter(
+            instructor=user,
+            is_deleted=False
+        ).prefetch_related(
+            Prefetch(
+                'modules',
+                queryset=Module.objects.filter(
+                    is_deleted=False
+                ).order_by('order_num').prefetch_related(
+                    Prefetch(
+                        'lesson_set',
+                        queryset=Lesson.objects.filter(
+                            is_deleted=False
+                        ).order_by('order_num').prefetch_related(
+                            'assignment_set'
+                        )
+                    )
+                )
+            )
+        ).order_by('-created_at')
 
 # ===== ADMIN-ЭНДПОИНТЫ =====
 class AdminUserViewSet(viewsets.ModelViewSet):
@@ -787,7 +833,7 @@ class AdminEnrollmentViewSet(viewsets.ModelViewSet):
 
 class AdminRatingViewSet(viewsets.ModelViewSet):
     queryset = Rating.objects.all()
-    serializer_class = RatingSerializer
+    serializer_class = RatingListSerializer
     permission_classes = [IsAdminOrReadOnly]
 
 class AdminAssignmentViewSet(viewsets.ModelViewSet):

@@ -32,7 +32,8 @@ urlpatterns = [
     
     # ===== ПРОФИЛЬ ПРЕПОДАВАТЕЛЯ =====
     path('instructors/<int:pk>/', views.InstructorProfileView.as_view(), name='instructor-profile'),
-    path('instructors/<int:pk>/courses/', views.InstructorCoursesView.as_view(), name='instructor-courses'),
+    path('instructor/my-courses/',views.InstructorMyCoursesView.as_view(),name='instructor-my-courses'),
+
     
     #===== КУРСЫ ===========
     path('courses/', views.CourseListView.as_view(), name='courses-list'),
@@ -48,7 +49,7 @@ urlpatterns = [
     # ===== СТРАНИЦА УРОКА =====
     path('lessons/<int:pk>/', views.LessonDetailView.as_view(), name='lesson-detail'),
     # Студент отправляет домашнее задание
-    path('instructor/courses/', views.InstructorCourseCreateView.as_view()),
+    path('instructor/courses/full-create/', views.InstructorCourseCreateView.as_view()),
 
     path('submissions/', views.SubmissionCreateView.as_view(), name='submission-create'),
     
