@@ -75,7 +75,11 @@ class CourseModulesView(generics.ListAPIView):
         course_id = self.kwargs['course_id']
         user = self.request.user
 
-        submissions_qs = Submission.objects.filter(user=user)
+        submissions_qs = Submission.objects.filter(
+    user=user,
+    is_graded=True
+    )
+
 
         assignments_qs = Assignment.objects.prefetch_related(
             Prefetch('submission_set', queryset=submissions_qs)
@@ -104,12 +108,14 @@ class CourseModulesView(generics.ListAPIView):
             for lesson in module.lesson_set.all():
                 for assignment in lesson.assignment_set.all():
                     total_assignments += 1
-                    if assignment.submission_set.exists():
+
+                    # submission_set уже отфильтрован по user + is_graded
+                    if assignment.submission_set.all():
                         completed_assignments += 1
 
-        progress_pct = 0
-        if total_assignments > 0:
-            progress_pct = round((completed_assignments / total_assignments) * 100)
+        progress_pct = round(
+            (completed_assignments / total_assignments) * 100
+        ) if total_assignments else 0
 
         return Response({
             'progress_pct': progress_pct,
@@ -117,6 +123,7 @@ class CourseModulesView(generics.ListAPIView):
             'completed_assignments': completed_assignments,
             'modules': serializer.data
         })
+
 
 
 
