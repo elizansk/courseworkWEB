@@ -164,102 +164,6 @@ import datetime
 
 from .models import Enrollment
 
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAdminUser
-from django.http import HttpResponse
-from openpyxl import Workbook
-from openpyxl.chart import BarChart, Reference
-from django.db.models import Count
-import datetime
-
-from .models import Enrollment, Course
-
-
-class EnrollmentExportExcelView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def get(self, request):
-        wb = Workbook()
-        wb.remove(wb.active)  # убираем дефолтный лист
-
-        # ===============================
-        # ЛИСТЫ ПО КАЖДОМУ КУРСУ
-        # ===============================
-        courses = Course.objects.all()
-
-        for course in courses:
-            ws = wb.create_sheet(title=f"Course - {course.title[:25]}")
-
-            ws.append([
-                "ID", "Email", "Имя", "Фамилия",
-                "Статус", "Дата записи", "Прогресс %"
-            ])
-
-            enrollments = Enrollment.objects.filter(
-                course=course
-            ).select_related('user')
-
-            for e in enrollments:
-                ws.append([
-                    e.id,
-                    e.user.email,
-                    e.user.first_name,
-                    e.user.last_name,
-                    e.status,
-                    e.enrolled_at.strftime("%Y-%m-%d") if e.enrolled_at else "",
-                    e.progress_pct
-                ])
-
-        # ===============================
-        # ЛИСТ СТАТИСТИКИ + ДИАГРАММА
-        # ===============================
-        stats_ws = wb.create_sheet(title="Stats")
-        stats_ws.append(["Курс", "Количество студентов"])
-
-        stats = (
-            Enrollment.objects
-            .values('course__title')
-            .annotate(cnt=Count('id'))
-            .order_by('-cnt')
-        )
-
-        for row in stats:
-            stats_ws.append([row['course__title'], row['cnt']])
-
-        chart = BarChart()
-        chart.title = "Количество студентов по курсам"
-        chart.y_axis.title = "Студенты"
-        chart.x_axis.title = "Курсы"
-
-        data = Reference(
-            stats_ws,
-            min_col=2,
-            min_row=1,
-            max_row=stats_ws.max_row
-        )
-        categories = Reference(
-            stats_ws,
-            min_col=1,
-            min_row=2,
-            max_row=stats_ws.max_row
-        )
-
-        chart.add_data(data, titles_from_data=True)
-        chart.set_categories(categories)
-        stats_ws.add_chart(chart, "D2")
-
-        # ===============================
-        # ОТДАЁМ ФАЙЛ
-        # ===============================
-        response = HttpResponse(
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-
-        filename = f"courses_grouped_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
-        response['Content-Disposition'] = f'attachment; filename={filename}'
-
-        wb.save(response)
-        return response
 
 
 class ModuleLessonsView(generics.ListAPIView):
@@ -862,6 +766,44 @@ class InstructorMyCoursesView(generics.ListAPIView):
                 )
             )
         ).order_by('-created_at')
+    # courses/views.py
+from rest_framework import viewsets, permissions, status
+from rest_framework.response import Response
+from .models import Course
+from .serializers import InstructorCourseSerializer, CourseFullCreateSerializer
+from .permissions import IsTeacher
+
+
+class InstructorCourseViewSet(viewsets.ModelViewSet):
+    """
+    CRUD для курсов преподавателя
+    """
+    permission_classes = [permissions.IsAuthenticated, IsTeacher]
+
+    def get_queryset(self):
+        # Показываем только курсы, созданные текущим преподавателем
+        return Course.objects.filter(instructor=self.request.user)
+
+    def get_serializer_class(self):
+        # Для GET используем сериализатор с модулями/уроками/заданиями
+        if self.action in ['list', 'retrieve']:
+            return InstructorCourseSerializer
+        # Для POST/PUT используем сериализатор для создания полного курса
+        return CourseFullCreateSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(instructor=self.request.user)
+
+    # Опционально: ограничим update/delete только своим курсом
+    def perform_update(self, serializer):
+        serializer.save(instructor=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        course = self.get_object()
+        if course.instructor != request.user:
+            return Response({"detail": "Нельзя удалять чужие курсы"}, status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
+
 
 # ===== ADMIN-ЭНДПОИНТЫ =====
 class AdminUserViewSet(viewsets.ModelViewSet):

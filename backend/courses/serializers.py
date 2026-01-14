@@ -166,15 +166,29 @@ class CourseFullCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = [
-            'title',
-            'slug',
-            'short_desc',
-            'description',
-            'price',
-            'thumbnail_url',
-            'category',
-            'modules'
+            'title', 'slug', 'short_desc', 'description',
+            'price', 'thumbnail_url', 'category', 'modules'
         ]
+
+    def update(self, instance, validated_data):
+        modules_data = validated_data.pop('modules', None)
+
+        # Обновляем основные поля курса
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        if modules_data is not None:
+            # Простейший способ — удалить старые модули и создать новые
+            instance.modules.all().delete()
+            for module_data in modules_data:
+                ModuleCreateSerializer().create({
+                    **module_data,
+                    'course': instance
+                })
+
+        return instance
+
 
     def create(self, validated_data):
         modules_data = validated_data.pop('modules')
@@ -709,3 +723,4 @@ class InstructorCourseSerializer(serializers.ModelSerializer):
             'thumbnail_url',
             'modules'
         ]
+        

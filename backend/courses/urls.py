@@ -33,13 +33,34 @@ urlpatterns = [
     # ===== ПРОФИЛЬ ПРЕПОДАВАТЕЛЯ =====
     path('instructors/<int:pk>/', views.InstructorProfileView.as_view(), name='instructor-profile'),
     path('instructor/my-courses/',views.InstructorMyCoursesView.as_view(),name='instructor-my-courses'),
+    # Получение списка курсов преподавателя
 
+# Получение конкретного курса
+    path(
+            'instructor/courses/<int:pk>/',
+            views.InstructorCourseViewSet.as_view({'get': 'retrieve'}),
+            name='instructor-courses-detail'
+        ),
+
+        # Редактирование курса
+    path(
+            'instructor/courses/<int:pk>/edit/',
+            views.InstructorCourseViewSet.as_view({'put': 'update', 'patch': 'partial_update'}),
+            name='instructor-courses-edit'
+        ),
+
+        # Удаление курса
+    path(
+            'instructor/courses/<int:pk>/delete/',
+            views.InstructorCourseViewSet.as_view({'delete': 'destroy'}),
+            name='instructor-courses-delete'
+        ),
     
     #===== КУРСЫ ===========
     path('courses/', views.CourseListView.as_view(), name='courses-list'),
+    path('courses/<int:pk>', views.CourseDetailView.as_view(), name='courses-list'),
     path('courses/<slug:slug>/', views.CourseDetailView.as_view(), name='course-detail'),
-    
-
+   
     path('courses/<int:course_id>/modules/', views.CourseModulesView.as_view(), name='course-modules'),
 
     # ===== МОИ КУРСЫ ======
@@ -70,7 +91,6 @@ urlpatterns = [
     # ===== ОТЗЫВЫ И ОЦЕНКИ =====
     path('courses/<int:course_id>/ratings/', views.RatingListView.as_view(), name='course-ratings'),
 
-    path('admin/export-full-db/', views.EnrollmentExportExcelView.as_view(), name='export-full-db'),
     # ===== ПОКУПКА / ЗАПИСЬ НА КУРС =====
     path('enrollments/', views.EnrollmentCreateView.as_view(), name='enrollment-create'),
     
