@@ -112,7 +112,7 @@ class CategoryDictSerializer(serializers.ModelSerializer):
 class AssignmentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
-        fields = ['title', 'description', 'max_score', 'is_required']
+        fields = ['title', 'description', 'max_score']
 
 
 class LessonCreateSerializer(serializers.ModelSerializer):
@@ -170,7 +170,6 @@ class CourseFullCreateSerializer(serializers.ModelSerializer):
             'short_desc',
             'description',
             'price',
-            'duration_hours',
             'thumbnail_url',
             'category',
             'modules'
