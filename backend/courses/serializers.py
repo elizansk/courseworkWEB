@@ -167,6 +167,7 @@ class CourseFullCreateSerializer(serializers.ModelSerializer):
         model = Course
         fields = [
             'title',
+            'slug',
             'short_desc',
             'description',
             'price',
