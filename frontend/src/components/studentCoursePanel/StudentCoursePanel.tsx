@@ -15,8 +15,6 @@ const StudentCoursePanel: React.FC = () => {
     useEffect(() => {
         const fetchEnrollments = async () => {
             try {
-                console.log(`${user?.access}`)
-                console.log(`${localStorage.getItem("access")}`)
                 const response = await fetch(
                     `${API_URL}/profile/enrollments/`,
                     {
@@ -32,6 +30,7 @@ const StudentCoursePanel: React.FC = () => {
                 }
 
                 const data = await response.json();
+                console.log(data.results)
                 setEnrollments(data.results);
             } catch (err) {
                 setError((err as Error).message);

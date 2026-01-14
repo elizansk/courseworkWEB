@@ -9,7 +9,7 @@
     background-color: #1f1f3e;
     color: #fff;
     padding: 2rem;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 
     h2 {
       margin-bottom: 2rem;
@@ -53,19 +53,6 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       animation: fadeIn 0.3s;
 
-      .profile-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1rem;
-
-        .avatar {
-          width: 80px;
-          height: 80px;
-          border-radius: 50%;
-          margin-right: 1rem;
-        }
-      }
-
       h1, h2 {
         margin-bottom: 1rem;
         color: #222;
@@ -76,11 +63,28 @@
         color: #555;
       }
 
+      /* Кнопка "Добавить новый курс" */
+      .add-course-btn {
+        background-color: #2563eb;
+        color: white;
+        font-weight: 500;
+        border: none;
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+        cursor: pointer;
+        margin-bottom: 1.5rem;
+        transition: background 0.2s;
+
+        &:hover {
+          background-color: #1d4ed8;
+        }
+      }
+
+      /* Список курсов */
       .course-list {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
         gap: 1rem;
-        margin-top: 1rem;
 
         .course-card {
           background: #fefefe;
@@ -88,54 +92,45 @@
           border-radius: 12px;
           box-shadow: 0 2px 8px rgba(0,0,0,0.05);
           transition: transform 0.2s;
+          word-wrap: break-word;
 
           &:hover {
-            transform: translateY(-4px);
+            transform: translateY(-2px);
           }
 
-          h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            color: #222;
-          }
-
-          .progress-bar {
-            background: #e0e0e0;
-            height: 12px;
-            border-radius: 6px;
-            margin: 0.5rem 0;
-
-            .progress {
-              height: 100%;
-              background: #f2c94c;
-              border-radius: 6px;
-            }
-          }
-
-          span {
-            font-size: 0.9rem;
-            color: #444;
+          h3, p, span {
+            word-wrap: break-word;
           }
 
           .actions {
             margin-top: 0.5rem;
             display: flex;
+            flex-wrap: wrap;
             gap: 0.5rem;
 
             button {
               padding: 0.4rem 0.8rem;
-              border: none;
               border-radius: 6px;
+              border: none;
               cursor: pointer;
               font-weight: 500;
               transition: background 0.2s;
 
-              &.continue {
+              &.publish {
                 background-color: #f2c94c;
                 color: #1f1f3e;
 
                 &:hover {
                   background-color: #e0b500;
+                }
+              }
+
+              &.edit {
+                background-color: #2563eb;
+                color: #fff;
+
+                &:hover {
+                  background-color: #1d4ed8;
                 }
               }
 
@@ -151,36 +146,29 @@
           }
         }
       }
-
-      .users-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-
-        th, td {
-          border: 1px solid #ddd;
-          padding: 0.75rem;
-          text-align: left;
-        }
-
-        th {
-          background-color: #f2f2f2;
-        }
-
-        tr:nth-child(even) {
-          background-color: #f9f9f9;
-        }
-      }
     }
   }
 }
+
+/* Анимация появления */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.profile-header{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+  width: 15%;
+  .avatar {
+    width: 100%;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .profile-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 }

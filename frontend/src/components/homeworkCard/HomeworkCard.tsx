@@ -9,18 +9,15 @@ type Props = {
 
 const HomeworkCard: React.FC<Props> = ({ assignment, onSubmitted }) => {
     const API_URL = import.meta.env.VITE_API_URL;
-    const submission = assignment.submissions && assignment.submissions.length > 0
-        ? assignment.submissions[0]
-        : null;
-    console.log(submission);
+    const submission = assignment.submission
+
+    console.log(assignment.submission);
     const [content, setContent] = useState("");
     const [fileUrl, setFileUrl] = useState("");
     const [loading, setLoading] = useState(false);
 
     let status = "Домашнее задание не сдано";
     if (submission) {
-        console.log(submission);
-        console.log(content);
         if (submission.score === null) status = "Домашнее задание на проверке";
         else if (submission.score < 50) status = "Домашнее задание не выполнено";
         else status = "Домашнее задание выполнено";
@@ -29,6 +26,7 @@ const HomeworkCard: React.FC<Props> = ({ assignment, onSubmitted }) => {
     const submit = async () => {
         setLoading(true);
         try {
+            console.log(fileUrl)
             const res = await fetch(`${API_URL}/submissions/`, {
                 method: "POST",
                 headers: {
