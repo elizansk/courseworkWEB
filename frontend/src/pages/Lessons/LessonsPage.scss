@@ -9,6 +9,22 @@
   }
 }
 
+.leave-review-btn {
+  padding: 0.7rem 1.5rem;
+  background: $color-indigo;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  transition: 0.2s;
+
+  &:hover {
+    background: darken($color-indigo, 10%);
+  }
+}
+
 .course-progress {
   margin-bottom: 1.5rem;
   opacity: 0.85;
@@ -42,6 +58,7 @@
   padding: 1.5rem;
   margin-bottom: 1.5rem;
 }
+
 .video-wrapper {
   position: relative;
   padding-bottom: 56.25%; // 16:9
@@ -53,5 +70,93 @@
     height: 100%;
     border: none;
     border-radius: 12px;
+  }
+}
+
+// Модалка
+.review-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.review-modal {
+  background: $color-card-bg;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: $color-text-light;
+    resize: none;
+    margin-bottom: 1rem;
+  }
+
+  .star-rating {
+    margin-bottom: 1rem;
+
+    .star {
+      font-size: 2rem;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.3);
+      transition: 0.2s;
+
+      &.selected {
+        color: $color-indigo;
+      }
+
+      &:hover {
+        color: lighten($color-indigo, 10%);
+      }
+    }
+  }
+
+  .form-buttons {
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 12px;
+      background: $color-indigo;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+
+      &:hover {
+        background: darken($color-indigo, 10%);
+      }
+    }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: $color-text-light;
   }
 }

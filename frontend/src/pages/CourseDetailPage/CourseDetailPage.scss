@@ -27,7 +27,6 @@
     background: rgba(255, 255, 255, 0.05);
     padding: 2rem;
     border-radius: 12px;
-    overflow-y: auto; // чтобы можно было прокручивать длинное описание
 
     .course-title {
       font-size: 2rem;
@@ -50,20 +49,119 @@
       color: #e5e7eb;
     }
 
-    .buy-button {
-      padding: 0.6rem 1.5rem;
-      background-color: #f2c94c;
-      color: #1f1f3e;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 1rem;
-      transition: background 0.2s;
+    // Центрирование и ограничение картинок
+    img {
+      max-width: 100%;      // картинка не выходит за контейнер
+      height: auto;         // сохраняет пропорции
+      display: block;       // обязательно для центрирования
+      margin: 0 auto 1rem;  // горизонтальный центр + нижний отступ
+      border-radius: 8px;   // аккуратные скругления
+      object-fit: contain;  // вписываем картинку без обрезки
+    }
 
-      &:hover {
-        background-color: #e0b500;
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+
+      .buy-button {
+        padding: 0.6rem 1.5rem;
+        background-color: #f2c94c;
+        color: #1f1f3e;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: background 0.2s;
+
+        &:hover {
+          background-color: #e0b500;
+        }
+      }
+
+      .view-reviews-btn {
+        padding: 0.6rem 1.5rem;
+        border-radius: 6px;
+        border: none;
+        background: #5c6ac4;
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+
+        &:hover {
+          background: #4b55a1;
+        }
       }
     }
+  }
+}
+
+.review-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.review-modal {
+  background: #1f1f1f;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+
+  h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .review-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.75rem;
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      strong {
+        color: #fff;
+      }
+
+      span {
+        color: #ffd700;
+        font-weight: 600;
+      }
+    }
+
+    p {
+      margin: 0.25rem 0;
+    }
+
+    small {
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: #fff;
   }
 }

@@ -1,0 +1,118 @@
+.teacher-course-form {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  h2 { margin-bottom: 1rem; color: #222; }
+  h3 { margin-top: 1rem; color: #1e40af; }
+  h4 { margin-top: 0.5rem; color: #2563eb; }
+  h5 { margin-top: 0.5rem; color: #9333ea; }
+
+  input, textarea, select {
+    width: 100%;
+    margin: 0.3rem 0 0.5rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+
+  // Кнопки формы
+  button {
+    margin: 0.5rem 0.5rem 0.5rem 0;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    &[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    &.add-course {
+      background: linear-gradient(135deg, #f2c94c, #f59e0b);
+      color: #1f1f3e;
+      font-size: 1rem;
+
+      &:hover {
+        background: linear-gradient(135deg, #e0b500, #d97706);
+      }
+    }
+
+    &.add-module {
+      background-color: #1e40af;
+      color: #fff;
+
+      &:hover {
+        background-color: #1d4ed8;
+      }
+    }
+
+    &.add-lesson {
+      background-color: #2563eb;
+      color: #fff;
+
+      &:hover {
+        background-color: #1d4ed8;
+      }
+    }
+
+    &.add-assignment {
+      background-color: #9333ea;
+      color: #fff;
+
+      &:hover {
+        background-color: #7e22ce;
+      }
+    }
+
+    &.delete {
+      background-color: #db2777;
+      color: #fff;
+
+      &:hover {
+        background-color: #c21e65;
+      }
+    }
+  }
+
+  .module-card {
+    padding: 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    background: #f1f5f9;
+  }
+
+  .lesson-card {
+    padding: 0.8rem;
+    border: 1px dashed #94a3b8;
+    border-radius: 8px;
+    margin: 0.5rem 0;
+    background: #f8fafc;
+  }
+
+  .assignment-card {
+    padding: 0.5rem;
+    border: 1px dotted #c084fc;
+    border-radius: 6px;
+    margin: 0.3rem 0;
+    background: #f5f3ff;
+  }
+}

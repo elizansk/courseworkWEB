@@ -12,7 +12,7 @@ export type Assignment = {
     id: number;
     title: string;
     description: string;
-    submissions: Submission[];
+    submission: Submission;
 };
 
 export type Lesson = {

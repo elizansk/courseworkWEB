@@ -30,3 +30,11 @@ export type SubmissionsListResponse = {
     previous: string | null;
     results: SubmissionForTeacher[];
 };
+
+export type TeacherCourse = {
+    id: number;
+    title: string;
+    description: string;
+    students_count: number;
+    is_published: boolean;
+};
