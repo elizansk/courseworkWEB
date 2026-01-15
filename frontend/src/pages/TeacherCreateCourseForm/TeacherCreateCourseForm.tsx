@@ -167,9 +167,24 @@ const TeacherCreateCourseForm: React.FC = () => {
     // ===== Уроки =====
     const addLesson = (mIdx: number) => {
         setFormData(prev => {
-            const modules = [...prev.modules];
-            modules[mIdx].lessons.push({title: "", video_url: "", order_num: prev.modules.length + 1, assignments: []});
-            return {...prev, modules};
+            const modules = prev.modules.map((m, idx) =>
+                idx === mIdx
+                    ? {
+                        ...m,
+                        lessons: [
+                            ...m.lessons,
+                            {
+                                title: "",
+                                video_url: "",
+                                order_num: m.lessons.length + 1,
+                                assignments: [],
+                            },
+                        ],
+                    }
+                    : m
+            );
+
+            return { ...prev, modules };
         });
     };
     const removeLesson = (mIdx: number, lIdx: number) => {
@@ -190,11 +205,33 @@ const TeacherCreateCourseForm: React.FC = () => {
     // ===== ДЗ =====
     const addAssignment = (mIdx: number, lIdx: number) => {
         setFormData(prev => {
-            const modules = [...prev.modules];
-            modules[mIdx].lessons[lIdx].assignments.push({title: "", description: "", max_score: 100});
-            return {...prev, modules};
+            const modules = prev.modules.map((m, mi) =>
+                mi === mIdx
+                    ? {
+                        ...m,
+                        lessons: m.lessons.map((l, li) =>
+                            li === lIdx
+                                ? {
+                                    ...l,
+                                    assignments: [
+                                        ...l.assignments,
+                                        {
+                                            title: "",
+                                            description: "",
+                                            max_score: 100,
+                                        },
+                                    ],
+                                }
+                                : l
+                        ),
+                    }
+                    : m
+            );
+
+            return { ...prev, modules };
         });
     };
+
     const removeAssignment = (mIdx: number, lIdx: number, aIdx: number) => {
         setFormData(prev => {
             const modules = [...prev.modules];

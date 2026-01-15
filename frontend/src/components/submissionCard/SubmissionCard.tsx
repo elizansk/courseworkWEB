@@ -64,9 +64,10 @@ export const SubmissionCard: React.FC<Props> = ({ submission, onGrade }) => {
                     onChange={e => setFeedback(e.target.value)}
                 />
 
+                {!feedback ?  (
                 <button onClick={submitGrade} disabled={sending}>
                     {sending ? "Сохранение..." : "Выставить оценку"}
-                </button>
+                </button>) : null}
             </div>
         </div>
     );

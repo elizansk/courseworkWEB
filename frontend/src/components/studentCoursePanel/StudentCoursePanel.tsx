@@ -65,7 +65,7 @@ const StudentCoursePanel: React.FC = () => {
                 ) : (
                     <div className="course-list">
                         {enrollments.map((enrollment) => {
-                            const { course, progress_pct } = enrollment;
+                            const { course } = enrollment;
 
                             return (
                                 <div key={enrollment.id} className="course-card">
@@ -86,14 +86,6 @@ const StudentCoursePanel: React.FC = () => {
                                         {course.instructor.last_name}
                                     </p>
 
-                                    <div className="progress-bar">
-                                        <div
-                                            className="progress"
-                                            style={{ width: `${progress_pct}%` }}
-                                        />
-                                    </div>
-
-                                    <span>{progress_pct}% пройдено</span>
 
                                     <button
                                         className="continue-btn"
