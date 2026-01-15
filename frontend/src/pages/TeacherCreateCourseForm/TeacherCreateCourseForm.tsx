@@ -49,6 +49,7 @@ interface EditingCourse {
 
 const TeacherCreateCourseForm: React.FC = () => {
     const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL_NEIRO = import.meta.env.VITE_API_URL_NEIRO;
     const navigate = useNavigate();
     const location = useLocation();
     const editingCourse = (location.state as { course?: EditingCourse })?.course;
@@ -89,7 +90,9 @@ const TeacherCreateCourseForm: React.FC = () => {
 
         setIsGenerating(true);
         try {
-            const response = await fetch(`http://localhost:3000/generate-course`, {
+            console.log(`${API_URL_NEIRO}/generate-course`);
+            console.log(`${API_URL}/categories/dict`)
+            const response = await fetch(`${API_URL_NEIRO}/generate-course`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({prompt: aiPrompt}),
@@ -112,7 +115,6 @@ const TeacherCreateCourseForm: React.FC = () => {
 
             alert("Курс успешно сгенерирован и подставлен в форму!");
         } catch (err) {
-            console.error(err);
             alert("Не удалось сгенерировать курс");
         } finally {
             setIsGenerating(false);
@@ -223,7 +225,8 @@ const TeacherCreateCourseForm: React.FC = () => {
         try {
             const method = editingCourse ? "PUT" : "POST";
             console.log(JSON.stringify(formData))
-            const url = editingCourse ? `${API_URL}/instructor/courses/full-create/${editingCourse.id}/` : `${API_URL}/instructor/courses/full-create/`;
+            const url = editingCourse ? `${API_URL}/instructor/courses/${editingCourse.id}/edit/` : `${API_URL}/instructor/courses/full-create/`;
+            console.log(url)
             const response = await fetch(url, {
                 method,
                 headers: {

@@ -1,11 +1,16 @@
+import dotenv from 'dotenv';
+dotenv.config({
+    path: `.env.${process.env.NODE_ENV || 'development'}`
+});
 import express, { Request, Response } from 'express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import {swaggerOptions} from "./swaggerOptions";
-import ollama from 'ollama';
+import { Ollama } from 'ollama';
 const app = express();
-const port = 3000;
+const port = Number(process.env.PORT) || 3000;
 import cors from 'cors';
+
 app.use(express.json());
 app.use(cors());
 
@@ -51,11 +56,15 @@ app.get('/', (req: Request, res: Response) => {
  *         description: Ошибка генерации курса
  */
 app.post('/generate-course', async (req: Request, res: Response) => {
+    const ollamaHost = process.env.OLLAMA_BASE_URL;
+    console.log('Подключение к Ollama по адресу:', ollamaHost);
     const { prompt } = req.body;
     console.log(prompt)
     if (!prompt) return res.status(400).json({ error: 'prompt обязателен' });
 
     try {
+        const ollama = new Ollama({ host: process.env.OLLAMA_BASE_URL });
+
         const response = await ollama.chat({
             model: 'gpt-oss:20b-cloud',
             messages: [
@@ -71,7 +80,7 @@ app.post('/generate-course', async (req: Request, res: Response) => {
   "price": 20000,
   "thumbnail_url": "",
   "category": "0",
-  "slug"
+  "slug": "..."
   "modules": [
     {
       "title": "...",

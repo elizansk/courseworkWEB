@@ -26,6 +26,9 @@ const HomeworkCard: React.FC<Props> = ({ assignment, onSubmitted }) => {
     const submit = async () => {
         setLoading(true);
         try {
+            console.log(`${API_URL}/submissions/`)
+            console.log(assignment.id);
+            console.log(content);
             console.log(fileUrl)
             const res = await fetch(`${API_URL}/submissions/`, {
                 method: "POST",

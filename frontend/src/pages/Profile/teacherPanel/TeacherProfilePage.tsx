@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import "./ProfilePage.scss";
 import {useAuth} from "../../../context/AuthContext.tsx";
 
@@ -8,13 +8,11 @@ export interface TeacherCourse {
     title: string;
     short_desc: string;
     thumbnail_url: string,
-    students_count: number;
 }
 
 const TeacherProfilePage: React.FC = () => {
     const API_URL = import.meta.env.VITE_API_URL;
-    const { user } = useAuth();
-    console.log(user)
+    const {user} = useAuth();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] =
         useState<"profile" | "courses" | "submissions">("courses");
@@ -30,7 +28,6 @@ const TeacherProfilePage: React.FC = () => {
             setError(null);
 
             try {
-                console.log(user?.access)
                 const response = await fetch(
                     `${API_URL}/instructor/my-courses/`,
                     {
@@ -45,7 +42,6 @@ const TeacherProfilePage: React.FC = () => {
                 }
 
                 const data = await response.json();
-                console.log(data);
                 setCourses(data.results);
             } catch {
                 setError("Не удалось загрузить курсы");
@@ -57,8 +53,31 @@ const TeacherProfilePage: React.FC = () => {
         loadCourses();
     }, []);
 
+    const deleteCourse = async (id: number) => {
+        if (!window.confirm("Удалить курс?")) return;
+
+        try {
+            const token = user?.access;
+
+            await fetch(`${API_URL}/instructor/courses/${id}/delete/`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            setCourses(prev => prev.filter(c => c.id !== id));
+        } catch {
+            alert("Ошибка удаления курса");
+        }
+    };
+
     const goToCreateCourse = () => {
         navigate("/teacher/create-course");
+    };
+
+    const editCourse = (course: TeacherCourse) => {
+        navigate("/teacher/create-course", {state: {course}});
     };
 
 
@@ -117,6 +136,20 @@ const TeacherProfilePage: React.FC = () => {
                                         <img src={course.thumbnail_url}/>
                                         <h3>{course.title}</h3>
                                         <p>{course.short_desc}</p>
+                                        <div className="actions">
+                                            <button className="edit" onClick={() => editCourse(course)}>
+                                                Редактировать
+                                            </button>
+
+                                            <button
+                                                className="delete"
+                                                onClick={() =>
+                                                    deleteCourse(course.id)
+                                                }
+                                            >
+                                                Удалить
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

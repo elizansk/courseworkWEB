@@ -88,7 +88,6 @@ const CourseDetailPage: React.FC = () => {
                     <strong>Категория:</strong> {course.category.name}
                 </p>
                 <p className="course-full-desc">{course.description}</p>
-                <p><strong>Длительность:</strong> {course.duration_hours} часов</p>
                 <p><strong>Цена:</strong> {course.price} ₽</p>
 
                 <div className="action-buttons">

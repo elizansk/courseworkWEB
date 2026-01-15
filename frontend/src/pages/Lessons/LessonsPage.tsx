@@ -26,6 +26,7 @@ const LessonsPage: React.FC = () => {
                     },
                 });
                 const data = await res.json();
+                console.log(data);
                 setCourse(data);
                 setActiveModuleId(data.modules[0]?.id ?? null);
             } catch (e) {
@@ -61,6 +62,7 @@ const LessonsPage: React.FC = () => {
         setReviewText("");
         setRating(0);
     };
+    console.log(course);
     if (loading) return <p>Загрузка...</p>;
     if (!course) return <p>Курс не найден</p>;
 
